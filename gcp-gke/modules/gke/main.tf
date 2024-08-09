@@ -65,7 +65,6 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
-
 resource "google_container_node_pool" "additional_nodes" {
   cluster    = google_container_cluster.primary.name
   location   = var.region
@@ -85,5 +84,27 @@ resource "google_container_node_pool" "additional_nodes" {
   autoscaling {
     min_node_count = var.additional_min_node_count
     max_node_count = var.additional_max_node_count
+  }
+}
+
+resource "google_container_node_pool" "third_nodes" {
+  cluster    = google_container_cluster.primary.name
+  location   = var.region
+  node_count = var.third_node_count
+
+  node_config {
+    machine_type = var.third_node_machine_type
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+    labels = {
+      env = "prod"
+    }
+    tags = ["gke-node", "prod"]
+  }
+
+  autoscaling {
+    min_node_count = var.third_min_node_count
+    max_node_count = var.third_max_node_count
   }
 }

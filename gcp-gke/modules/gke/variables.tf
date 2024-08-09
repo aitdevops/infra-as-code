@@ -82,3 +82,27 @@ variable "additional_max_node_count" {
   type        = number
   default     = 1
 }
+
+variable "third_node_count" {
+  description = "Number of nodes in the additional node pool"
+  type        = number
+  default     = 1
+}
+
+variable "third_node_machine_type" {
+  description = "Machine type for the additional node pool"
+  type        = string
+  default     = "e2-medium"
+}
+
+variable "third_min_node_count" {
+  description = "Minimum number of nodes in the additional node pool"
+  type        = number
+  default     = 1
+}
+
+variable "third_max_node_count" {
+  description = "Maximum number of nodes in the additional node pool"
+  type        = number
+  default     = 1
+}

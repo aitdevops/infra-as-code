@@ -1,7 +1,7 @@
 provider "google" {
   project = var.project_id
   region  = var.region
-  credentials = file("/Users/rajeev/Desktop/gcp-infra/credentials/aitdevops8-serviceaccount.json")
+  credentials = file("/Users/rajeev/Desktop/service-account.json")
 }
 
 module "vpc" {
