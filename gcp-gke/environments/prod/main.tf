@@ -6,9 +6,9 @@ terraform {
 }
 
 provider "google" {
-  project = var.project_id
-  region  = var.region
-  credentials = file("/Users/rajeev/Desktop/service-account.json")
+  project     = var.project_id
+  region      = var.region
+  credentials = file("/Users/rajeev/Desktop/repos/service-account.json")
 }
 
 module "vpc" {
@@ -36,3 +36,16 @@ module "gke" {
   region       = var.region
   zone         = var.zone
 }
+
+module "postgresql" {
+  source            = "../../modules/gcp-postgresql"
+  instance_name     = "prod-postgres"
+  region            = var.region
+  instance_tier     = "db-f1-micro"
+  private_network   = module.vpc.vpc_name  # Pass only the VPC name
+  project_id        = var.project_id       # Pass the project ID
+  database_name     = "mydatabase"
+  database_user     = "myuser"
+  database_password = "mypassword"
+}
+
