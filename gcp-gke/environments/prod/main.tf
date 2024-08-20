@@ -15,12 +15,14 @@ module "vpc" {
   source      = "../../modules/vpc"
   project_id  = var.project_id
   vpc_name    = var.vpc_name
+  region      = var.region
 }
 
 module "subnet" {
   source      = "../../modules/subnet"
   project_id  = var.project_id
   vpc_name    = module.vpc.vpc_name
+  region      = var.region
 }
 
 module "gke" {
