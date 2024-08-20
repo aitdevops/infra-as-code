@@ -43,13 +43,15 @@ resource "google_container_cluster" "primary" {
   }
 }
 
-resource "google_container_node_pool" "primary_nodes" {
+resource "google_container_node_pool" "node_pool" {
+  for_each = { for pool in var.node_pools : pool.name => pool }
+
   cluster    = google_container_cluster.primary.name
   location   = var.region
-  node_count = var.node_count
+  node_count = each.value.node_count
 
   node_config {
-    machine_type = var.node_machine_type
+    machine_type = each.value.node_machine_type
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -60,51 +62,7 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 
   autoscaling {
-    min_node_count = var.min_node_count
-    max_node_count = var.max_node_count
-  }
-}
-
-resource "google_container_node_pool" "additional_nodes" {
-  cluster    = google_container_cluster.primary.name
-  location   = var.region
-  node_count = var.additional_node_count
-
-  node_config {
-    machine_type = var.additional_node_machine_type
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform",
-    ]
-    labels = {
-      env = "prod"
-    }
-    tags = ["gke-node", "prod"]
-  }
-
-  autoscaling {
-    min_node_count = var.additional_min_node_count
-    max_node_count = var.additional_max_node_count
-  }
-}
-
-resource "google_container_node_pool" "third_nodes" {
-  cluster    = google_container_cluster.primary.name
-  location   = var.region
-  node_count = var.third_node_count
-
-  node_config {
-    machine_type = var.third_node_machine_type
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform",
-    ]
-    labels = {
-      env = "prod"
-    }
-    tags = ["gke-node", "prod"]
-  }
-
-  autoscaling {
-    min_node_count = var.third_min_node_count
-    max_node_count = var.third_max_node_count
+    min_node_count = each.value.min_node_count
+    max_node_count = each.value.max_node_count
   }
 }

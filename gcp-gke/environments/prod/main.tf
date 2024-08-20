@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket  = "terraform-aitdevops"
+    bucket  = "terraform-state-aitdevops"
     prefix  = "terraform/state"
   }
 }
@@ -8,7 +8,7 @@ terraform {
 provider "google" {
   project     = var.project_id
   region      = var.region
-  credentials = file("/Users/rajeev/Desktop/repos/service-account.json")
+  credentials = file(var.credentials_file_path)
 }
 
 module "vpc" {
@@ -24,28 +24,29 @@ module "subnet" {
 }
 
 module "gke" {
-  source       = "../../modules/gke"
-  project_id   = var.project_id
-  cluster_name = var.cluster_name
-  vpc_name     = module.vpc.vpc_name
-  subnet_name  = module.subnet.private_subnet_name
-  node_count   = var.node_count
-  node_machine_type = var.node_machine_type
-  min_node_count = var.min_node_count
-  max_node_count = var.max_node_count
-  region       = var.region
-  zone         = var.zone
+  source               = "../../modules/gke"
+  project_id           = var.project_id
+  cluster_name         = var.cluster_name
+  vpc_name             = module.vpc.vpc_name
+  subnet_name          = module.subnet.private_subnet_name
+  node_pools           = var.node_pools
+  region               = var.region
+  zone                 = var.zone
 }
 
 module "postgresql" {
   source            = "../../modules/gcp-postgresql"
-  instance_name     = "prod-postgres"
+  instance_name     = var.postgres_instance_name
   region            = var.region
-  instance_tier     = "db-f1-micro"
-  private_network   = module.vpc.vpc_name  # Pass only the VPC name
-  project_id        = var.project_id       # Pass the project ID
-  database_name     = "mydatabase"
-  database_user     = "myuser"
-  database_password = "mypassword"
+  instance_tier     = var.postgres_instance_tier
+  private_network   = module.vpc.vpc_name
+  project_id        = var.project_id
+  database_name     = var.database_name
 }
 
+module "service_account" {
+  source      = "../../modules/service-account"
+  project_id  = var.project_id
+  region      = var.region
+  zone        = var.zone
+}

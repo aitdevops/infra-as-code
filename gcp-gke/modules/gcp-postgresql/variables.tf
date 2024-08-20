@@ -6,13 +6,11 @@ variable "instance_name" {
 variable "region" {
   description = "The region where the PostgreSQL instance will be created."
   type        = string
-  default     = "us-central1"
 }
 
 variable "instance_tier" {
   description = "The machine type tier for the PostgreSQL instance."
   type        = string
-  default     = "db-f1-micro"
 }
 
 variable "private_network" {
@@ -25,15 +23,6 @@ variable "database_name" {
   type        = string
 }
 
-variable "database_user" {
-  description = "The username for the default database user."
-  type        = string
-}
-
-variable "database_password" {
-  description = "The password for the default database user."
-  type        = string
-}
 variable "project_id" {
   description = "The ID of the project in which resources will be created."
   type        = string

@@ -37,9 +37,3 @@ resource "google_sql_database" "default_database" {
   name     = var.database_name
   instance = google_sql_database_instance.postgres_instance.name
 }
-
-resource "google_sql_user" "default_user" {
-  name     = var.database_user
-  instance = google_sql_database_instance.postgres_instance.name
-  password = var.database_password
-}

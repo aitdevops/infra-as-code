@@ -1,60 +1,60 @@
 variable "project_id" {
   description = "The GCP project ID"
   type        = string
-  default     = "aitdevops8"
 }
 
 variable "region" {
   description = "The GCP region"
   type        = string
-  default     = "us-central1"
 }
 
 variable "zone" {
   description = "The GCP zone"
   type        = string
-  default     = "us-central1-a"
 }
 
 variable "cluster_name" {
   description = "The name of the GKE cluster"
   type        = string
-  default     = "aitdevops-gke"
 }
 
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string
-  default     = "prod-vpc"
 }
 
 variable "subnet_name" {
   description = "The name of the subnet"
   type        = string
-  default     = "prod-vpc-private-subnet"
-
 }
 
-variable "node_count" {
-  description = "number of nodes"
-  type        = number
-  default     = 1
+variable "node_pools" {
+  description = "List of node pools with their configurations"
+  type = list(object({
+    name               = string
+    node_count         = number
+    node_machine_type  = string
+    min_node_count     = number
+    max_node_count     = number
+  }))
 }
 
-variable "node_machine_type" {
-  description = "The machine type for the nodes"
+variable "database_name" {
+  description = "The name of the PostgreSQL database"
   type        = string
-  default     = "e2-medium"
 }
 
-variable "min_node_count" {
-  description = "min node count"
-  type        = number
-  default     = 1
+variable "credentials_file_path" {
+  description = "Path to the GCP credentials file"
+  type        = string
 }
 
-variable "max_node_count" {
-  description = "max node count"
-  type        = number
-  default     = 1
+variable "postgres_instance_name" {
+  description = "The name of the PostgreSQL instance."
+  type        = string
+}
+
+variable "postgres_instance_tier" {
+  description = "The machine type tier for the PostgreSQL instance."
+  type        = string
 }
