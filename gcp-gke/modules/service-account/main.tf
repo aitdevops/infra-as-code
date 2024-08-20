@@ -12,7 +12,8 @@ resource "google_project_iam_member" "iam_bindings" {
     "roles/container.developer",
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountUser",
-    "roles/resourcemanager.projectIamAdmin"
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/artifactregistry.admin"
   ])
 
   project = var.project_id

@@ -1,10 +1,3 @@
-terraform {
-  backend "gcs" {
-    bucket  = "terraform-state-aitdevops"
-    prefix  = "terraform/state"
-  }
-}
-
 provider "google" {
   project     = var.project_id
   region      = var.region
@@ -48,6 +41,13 @@ module "postgresql" {
 
 module "service_account" {
   source      = "../../modules/service-account"
+  project_id  = var.project_id
+  region      = var.region
+  zone        = var.zone
+}
+
+module "artifact-repository" {
+  source      = "../../modules/artifact-repository"
   project_id  = var.project_id
   region      = var.region
   zone        = var.zone
