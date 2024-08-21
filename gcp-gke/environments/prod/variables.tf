@@ -18,6 +18,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_location" {
+  description = "The location of the GKE cluster (region or zone)"
+  type        = string
+}
+
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string

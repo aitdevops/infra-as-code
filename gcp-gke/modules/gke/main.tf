@@ -3,7 +3,7 @@ resource "google_container_cluster" "primary" {
   location = var.region
 
   remove_default_node_pool = true
-  initial_node_count       = 2
+  initial_node_count       = 1
 
   network    = var.vpc_name
   subnetwork = var.subnet_name
@@ -38,9 +38,41 @@ resource "google_container_cluster" "primary" {
     }
 
     network_policy_config {
-      disabled = false
+      disabled = true
     }
   }
 
   deletion_protection = false  # Disable deletion protection here
+}
+
+resource "google_container_node_pool" "node_pools" {
+  for_each = { for np in var.node_pools : np.name => np }
+
+  cluster    = google_container_cluster.primary.name
+  location   = var.region
+  node_count = each.value.node_count
+
+  node_config {
+    machine_type = each.value.node_machine_type
+
+    preemptible  = false
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
+
+  autoscaling {
+    min_node_count = each.value.min_node_count
+    max_node_count = each.value.max_node_count
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
 }

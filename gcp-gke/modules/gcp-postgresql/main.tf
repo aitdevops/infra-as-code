@@ -29,7 +29,7 @@ resource "google_sql_database_instance" "postgres_instance" {
       private_network = "projects/${var.project_id}/global/networks/${var.private_network}"
     }
   }
-
+  deletion_protection = false
   depends_on = [google_service_networking_connection.private_vpc_connection]
 }
 

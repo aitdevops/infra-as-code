@@ -14,6 +14,6 @@ output "gke_cluster_master_version" {
 }
 
 output "service_account_email" {
-  description = "service account email"
-  value = module.service_account.service_account_email
+  description = "Service account email"
+  value       = module.service_account.service_account_email
 }

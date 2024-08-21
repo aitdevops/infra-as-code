@@ -4,6 +4,11 @@ provider "google" {
   credentials = file(var.credentials_file_path)
 }
 
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+
 module "vpc" {
   source      = "../../modules/vpc"
   project_id  = var.project_id
@@ -51,4 +56,8 @@ module "artifact-repository" {
   project_id  = var.project_id
   region      = var.region
   zone        = var.zone
+}
+
+module "helm" {
+  source            = "../../modules/helm"
 }

@@ -8,8 +8,10 @@ resource "google_project_iam_member" "iam_bindings" {
   for_each = toset([
     "roles/compute.viewer",
     "roles/compute.securityAdmin",
+    "roles/container.admin",
     "roles/container.clusterAdmin",
     "roles/container.developer",
+    "roles/container.serviceAgent",
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountUser",
     "roles/resourcemanager.projectIamAdmin",
