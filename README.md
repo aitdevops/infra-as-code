@@ -10,12 +10,23 @@ This repository contains Terraform configurations for setting up and managing cl
 
 The following resources are currently managed using Terraform in GCP:
 
+# Cloud Infrastructure Components
+
 - **VPC Network**: A Virtual Private Cloud (VPC) network to host cloud resources.
 - **Private Subnet**: A private subnet within the VPC for internal resources.
 - **Public Subnet**: A public subnet within the VPC for internet-facing resources.
 - **Internet Gateway**: A gateway to provide internet access to resources in the public subnet.
 - **NAT Gateway**: A Network Address Translation (NAT) gateway for private subnet resources to access the internet securely.
 - **Google Kubernetes Engine (GKE)**: A managed Kubernetes cluster for containerized applications.
+- **Cloud Storage**: Google Cloud Storage for storing and managing data.
+- **PostgreSQL**: A managed PostgreSQL database for data storage and retrieval.
+- **Artifact Registry**: A secure, private Docker image repository to store and manage container images.
+- **IAM Role and Service Account**: Identity and Access Management (IAM) roles and service accounts for managing permissions and access control.
+- **Ingress**: Kubernetes Ingress resources for managing external access to the services within the GKE cluster.
+- **ArgoCD**: A declarative GitOps continuous delivery tool for Kubernetes.
+- **CertManager**: A Kubernetes add-on to automate the management and issuance of TLS certificates.
+- **Cloud DNS**: A scalable, reliable, and managed authoritative Domain Name System (DNS) service.
+
 
 ## Future Plans
 
