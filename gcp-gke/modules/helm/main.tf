@@ -33,14 +33,17 @@ resource "helm_release" "cert-manager" {
     value = "true"
   }
 
-  timeout = 300 # Timeout in seconds
-  wait    = true  # Wait for resources to be ready
+  timeout          = 300 # Timeout in seconds
+  wait             = true  # Wait for resources to be ready
 }
 
 resource "null_resource" "patch_argocd_service" {
   depends_on = [helm_release.argocd]
 
-  provisioner "local-exec" {
-    command = "kubectl patch svc argocd-server -n argocd -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'"
+   provisioner "local-exec" {
+    command = <<EOT
+    sleep 30  # Wait for the LoadBalancer IP to be assigned
+    kubectl get svc argocd-server -n argocd -o jsonpath='{.status.loadBalancer.ingress[0].ip}' > /tmp/argocd_lb_ip.txt
+    EOT
   }
 }

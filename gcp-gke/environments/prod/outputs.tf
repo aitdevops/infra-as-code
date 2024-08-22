@@ -17,3 +17,17 @@ output "service_account_email" {
   description = "Service account email"
   value       = module.service_account.service_account_email
 }
+output "dns_zone_name" {
+  description = "The name of the DNS managed zone"
+  value       = module.cloud-dns.dns_zone_name
+}
+
+output "dns_name_servers" {
+  description = "The name servers for the managed zone"
+  value       = module.cloud-dns.dns_name_servers
+}
+
+output "a_record_ip" {
+  description = "The IP address set in the A record"
+  value       = module.cloud-dns.a_record_ip
+}

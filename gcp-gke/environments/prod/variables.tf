@@ -63,3 +63,23 @@ variable "postgres_instance_tier" {
   description = "The machine type tier for the PostgreSQL instance."
   type        = string
 }
+
+variable "domain_name" {
+  description = "The domain name for the managed zone"
+  type        = string
+}
+
+variable "name" {
+  description = "site url"
+  type        = string
+}
+
+variable "dns_managed_zone" {
+  description = "The name of the DNS managed zone"
+  type        = string
+}
+
+variable "a_record_ip" {
+  description = "The IP address to set in the A record"
+  type        = string
+}

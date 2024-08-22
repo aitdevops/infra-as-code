@@ -3,12 +3,9 @@ provider "google" {
   region      = var.region
   credentials = file(var.credentials_file_path)
 }
-
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-
-
+# provider "kubernetes" {
+#   config_path = "~/.kube/config"
+# }
 module "vpc" {
   source      = "../../modules/vpc"
   project_id  = var.project_id
@@ -57,7 +54,17 @@ module "artifact-repository" {
   region      = var.region
   zone        = var.zone
 }
+module "cloud-dns" {
+  source            = "../../modules/cloud-dns"
+  project_id  = var.project_id
+  credentials_file_path = var.credentials_file_path
+  domain_name = var.domain_name
+  dns_managed_zone = var.dns_managed_zone
+  a_record_ip = var.a_record_ip
+  name        = var.name
+}
 
 module "helm" {
   source            = "../../modules/helm"
 }
+
