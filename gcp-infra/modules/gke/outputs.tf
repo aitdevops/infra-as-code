@@ -9,3 +9,6 @@ output "endpoint" {
 output "master_version" {
   value = google_container_cluster.primary.master_version
 }
+output "master_auth" {
+  value = google_container_cluster.primary.master_auth
+}

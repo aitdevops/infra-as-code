@@ -4,6 +4,7 @@ provider "google" {
   credentials = file(var.credentials_file_path)
 }
 
+
 module "vpc" {
   source      = "../../modules/vpc"
   project_id  = var.project_id
@@ -52,27 +53,26 @@ module "artifact-repository" {
   region      = var.region
   zone        = var.zone
 }
-module "cloud-dns" {
-  source            = "../../modules/cloud-dns"
-  project_id  = var.project_id
-  credentials_file_path = var.credentials_file_path
-  domain_name = var.domain_name
-  dns_managed_zone = var.dns_managed_zone
-  a_record_ip = var.a_record_ip
-  name        = var.name
-}
 
-module "helm" {
-  source            = "../../modules/helm"
+module "cloud-dns" {
+  source                = "../../modules/cloud-dns"
+  project_id            = var.project_id
+  credentials_file_path = var.credentials_file_path
+  domain_name           = var.domain_name
+  dns_managed_zone      = var.dns_managed_zone
+  a_record_ip            = var.a_record_ip
+  name                  = var.name
+  argo_service          = var.argo_service
+  auth_service          = var.auth_service
+  user_service          = var.user_service
+  approval_service      = var.approval_service
 }
 
 module "cloud_storage" {
-  source = "../../modules/cloud-storage"
-
- bucket_name             = var.bucket_name
+  source                      = "../../modules/cloud-storage"
+  bucket_name                 = var.bucket_name
   location                    = var.location
   force_destroy               = var.force_destroy
   uniform_bucket_level_access = var.uniform_bucket_level_access
   lifecycle_age               = var.lifecycle_age
 }
-

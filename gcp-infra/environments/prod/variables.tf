@@ -73,16 +73,36 @@ variable "name" {
   type        = string
 }
 
+variable "argo_service" {
+  description = "site url"
+  type        = string
+}
+
+variable "auth_service" {
+  description = "site url"
+  type        = string
+}
+
+variable "user_service" {
+  description = "site url"
+  type        = string
+}
+
+variable "approval_service" {
+  description = "site url"
+  type        = string
+}
+
 variable "dns_managed_zone" {
   description = "The name of the DNS managed zone"
   type        = string
 }
 
 variable "a_record_ip" {
-  description = "The IP address to set in the A record"
+  description = "The IP address to set in the site record"
   type        = string
 }
-#####################Cloud-Storage########################
+##################Cloud-Storage########################
 variable "bucket_name" {
   description = "The name of the storage bucket."
   type        = string

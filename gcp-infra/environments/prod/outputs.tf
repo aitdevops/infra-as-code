@@ -30,10 +30,32 @@ output "dns_name_servers" {
   value       = module.cloud-dns.dns_name_servers
 }
 
-output "a_record_ip" {
-  description = "The IP address set in the A record"
-  value       = module.cloud-dns.a_record_ip
+output "a_record" {
+  description = "The IP address set in the site record"
+  value       = module.cloud-dns.a_record
 }
+
+output "b_record" {
+  description = "The IP address set in the site record"
+  value       = module.cloud-dns.b_record
+}
+
+output "c_record" {
+  description = "The IP address set in the auth record"
+  value       = module.cloud-dns.c_record
+}
+
+output "d_record" {
+  description = "The IP address set in the user record"
+  value       = module.cloud-dns.d_record
+}
+
+output "e_record" {
+  description = "The IP address set in the approval record"
+  value       = module.cloud-dns.e_record
+}
+
+
 #####################Cloud-Storage########################
 output "bucket_name" {
   description = "The name of bucket"
