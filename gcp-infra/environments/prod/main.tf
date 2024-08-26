@@ -19,6 +19,13 @@ module "subnet" {
   region      = var.region
 }
 
+module "service_account" {
+  source      = "../../modules/service-account"
+  project_id  = var.project_id
+  region      = var.region
+  zone        = var.zone
+}
+
 module "gke" {
   source               = "../../modules/gke"
   project_id           = var.project_id
@@ -26,8 +33,11 @@ module "gke" {
   vpc_name             = module.vpc.vpc_name
   subnet_name          = module.subnet.private_subnet_name
   node_pools           = var.node_pools
+  namespaces           = var.namespaces
   region               = var.region
   zone                 = var.zone
+  gke_service_account_email = module.service_account.gke_service_account_email  # Pass the service account email
+  gke_service_account_name  = module.service_account.gke_service_account_name   # Pass the service account name
 }
 
 module "postgresql" {
@@ -40,12 +50,6 @@ module "postgresql" {
   database_name     = var.database_name
 }
 
-module "service_account" {
-  source      = "../../modules/service-account"
-  project_id  = var.project_id
-  region      = var.region
-  zone        = var.zone
-}
 
 module "artifact-repository" {
   source      = "../../modules/artifact-repository"

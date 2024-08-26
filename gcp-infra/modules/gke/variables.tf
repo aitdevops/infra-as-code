@@ -38,3 +38,16 @@ variable "node_pools" {
     max_node_count     = number
   }))
 }
+variable "namespaces" {
+  description = "A list of namespaces where the service account should be created"
+  type        = list(string)
+}
+variable "gke_service_account_email" {
+  description = "The email of the GKE service account to be used by the node pool"
+  type        = string
+}
+
+variable "gke_service_account_name" {
+  description = "The name of the GKE service account"
+  type        = string
+}

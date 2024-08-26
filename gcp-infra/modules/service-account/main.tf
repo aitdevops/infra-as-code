@@ -1,9 +1,15 @@
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+# Service Account for GKE
 resource "google_service_account" "terraform_gke" {
   account_id   = "terraform-gke"
   display_name = "Terraform GKE"
-  description  = "Service account for Terraform to manage GKE clusters"
+  description  = "Service account for Terraform to manage gcloud services"
 }
 
+# IAM Roles for the Service Account
 resource "google_project_iam_member" "iam_bindings" {
   for_each = toset([
     "roles/compute.viewer",

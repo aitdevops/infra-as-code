@@ -1,3 +1,4 @@
+# GKE Cluster with Workload Identity
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
@@ -13,6 +14,10 @@ resource "google_container_cluster" "primary" {
   ip_allocation_policy {
     cluster_secondary_range_name = "pods"
     services_secondary_range_name = "services"
+  }
+
+  workload_identity_config {
+    workload_pool = "${var.project_id}.svc.id.goog"
   }
 
   private_cluster_config {
@@ -45,6 +50,7 @@ resource "google_container_cluster" "primary" {
   deletion_protection = false  # Disable deletion protection here
 }
 
+# Node Pool with Service Account
 resource "google_container_node_pool" "node_pools" {
   for_each = { for np in var.node_pools : np.name => np }
 
@@ -54,6 +60,7 @@ resource "google_container_node_pool" "node_pools" {
 
   node_config {
     machine_type = each.value.node_machine_type
+    service_account = var.gke_service_account_email  # Assign the service account to the node pool
 
     preemptible  = false
     oauth_scopes = [
@@ -74,5 +81,32 @@ resource "google_container_node_pool" "node_pools" {
   upgrade_settings {
     max_surge       = 1
     max_unavailable = 0
+  }
+}
+
+# IAM Binding for Workload Identity
+resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
+  service_account_id = var.gke_service_account_name
+  role               = "roles/iam.workloadIdentityUser"
+
+  members = [
+    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+  ]
+}
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+# Kubernetes Service Account
+resource "kubernetes_service_account" "ksa" {
+  for_each = toset(var.namespaces)
+
+  metadata {
+    name      = "k8s-service-account"
+    namespace = each.value  # Create the service account in each namespace
+    annotations = {
+      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
+    }
   }
 }

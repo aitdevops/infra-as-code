@@ -47,6 +47,10 @@ variable "node_pools" {
     max_node_count     = number
   }))
 }
+variable "namespaces" {
+  description = "A list of namespaces where the service account should be created"
+  type        = list(string)
+}
 #####################PostgreSQL########################
 variable "database_name" {
   description = "The name of the PostgreSQL database"
