@@ -23,7 +23,8 @@ resource "google_project_iam_member" "iam_bindings" {
     "roles/resourcemanager.projectIamAdmin",
     "roles/artifactregistry.admin",
     "roles/dns.admin",
-    "roles/iam.serviceAccountUser"
+    "roles/iam.serviceAccountUser",
+    "roles/artifactregistry.reader"
   ])
 
   project = var.project_id

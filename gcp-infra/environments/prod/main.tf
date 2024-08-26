@@ -64,12 +64,14 @@ module "cloud-dns" {
   credentials_file_path = var.credentials_file_path
   domain_name           = var.domain_name
   dns_managed_zone      = var.dns_managed_zone
-  a_record_ip            = var.a_record_ip
+  a_record_ip           = var.a_record_ip
+  db_ip                 = var.db_ip
   name                  = var.name
   argo_service          = var.argo_service
   auth_service          = var.auth_service
   user_service          = var.user_service
   approval_service      = var.approval_service
+  database_service      = var.database_service
 }
 
 module "cloud_storage" {

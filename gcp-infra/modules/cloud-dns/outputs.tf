@@ -32,3 +32,7 @@ output "e_record" {
   description = "The IP address set in the approval record"
   value       = google_dns_record_set.e_record.rrdatas[0]
 }
+output "f_record" {
+  description = "The IP address set in the database record"
+  value       = google_dns_record_set.e_record.rrdatas[0]
+}

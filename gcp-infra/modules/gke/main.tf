@@ -91,6 +91,7 @@ resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
 
   members = [
     "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
   ]
 }
 

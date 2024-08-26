@@ -96,6 +96,10 @@ variable "approval_service" {
   description = "site url"
   type        = string
 }
+variable "database_service" {
+  description = "site url"
+  type        = string
+}
 
 variable "dns_managed_zone" {
   description = "The name of the DNS managed zone"
@@ -103,6 +107,10 @@ variable "dns_managed_zone" {
 }
 
 variable "a_record_ip" {
+  description = "The IP address to set in the site record"
+  type        = string
+}
+variable "db_ip" {
   description = "The IP address to set in the site record"
   type        = string
 }
