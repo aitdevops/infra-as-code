@@ -65,3 +65,5 @@ output "location" {
   description = "The location of bucket"
   value       = module.cloud_storage.location
 }
+
+

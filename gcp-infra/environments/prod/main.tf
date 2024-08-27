@@ -82,3 +82,12 @@ module "cloud_storage" {
   uniform_bucket_level_access = var.uniform_bucket_level_access
   lifecycle_age               = var.lifecycle_age
 }
+
+module "cloud_function" {
+  source      = "../../modules/cloud-function"
+  project_id  = var.project_id
+  region      = var.region
+  zip_file    = var.zip_file
+  service_account_email = var.service_account_email
+
+}

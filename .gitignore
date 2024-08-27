@@ -12,3 +12,4 @@ terraform.rc
 # Ignore terraform.tfvars
 terraform.tfvars
 .terraform.lock.hcl
+./modules/cloud-function/sendApprovalEmail.zip

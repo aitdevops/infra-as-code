@@ -139,3 +139,11 @@ variable "lifecycle_age" {
   description = "The age of objects before they are deleted by lifecycle management."
   type        = number
 }
+variable "zip_file" {
+  description = "zip file"
+  type        = string
+}
+variable "service_account_email" {
+  description = "The email of the existing service account to use with the Cloud Function"
+  type        = string
+}
