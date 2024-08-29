@@ -1,15 +1,15 @@
-name: Test GCP Connection
+name: Create GCS Bucket
 
 on:
   workflow_dispatch: 
 
 permissions:
   contents: read
-  id-token: 'write'
+  id-token: write
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  create-bucket:
+    name: Create GCS Bucket
     runs-on: ubuntu-latest
 
     defaults:
@@ -21,32 +21,24 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Authenticate to Google Cloud using Workload Identity Federation
     - id: auth
       uses: google-github-actions/auth@v2.0.0  
       with:
         workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'github-actions@devops-projects-426703.iam.gserviceaccount.com'
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+    # Set up Google Cloud SDK
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
 
-    - name: Terraform Init
-      run: terraform init
-
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan -input=false
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve -input=false
-
-    # Create a Test Storage Bucket
-    - name: Create a Test Storage Bucket
+    # Create a new Google Cloud Storage bucket
+    - name: Create GCS Bucket
       run: |
-        gsutil mb -l us-central1 gs://test-bucket-${{ secrets.PROJECT_ID }}-$(date +%s)/
-      shell: bash
+        BUCKET_NAME="my-new-gcs-bucket-$(date +%s)"
+        gsutil mb -l us-central1 gs://$BUCKET_NAME/
+        echo "Created bucket: $BUCKET_NAME"
 
-    # List Buckets to Verify Creation
-    - name: List Google Cloud Storage Buckets
+    # List all Google Cloud Storage buckets to verify creation
+    - name: List GCS Buckets
       run: gsutil ls
-      shell: bash
