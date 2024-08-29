@@ -1,8 +1,3 @@
-provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
 # Storage bucket to store the function code
 resource "google_storage_bucket" "function_bucket" {
   name          = "test-functions"

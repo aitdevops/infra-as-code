@@ -1,9 +1,3 @@
-provider "google" {
-  project     = var.project_id
-  credentials = file(var.credentials_file_path)
-  region      = var.region
-}
-
 resource "google_dns_managed_zone" "dns_zone" {
   name        = var.dns_managed_zone
   dns_name    = var.domain_name

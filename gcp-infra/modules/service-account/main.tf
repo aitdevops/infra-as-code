@@ -1,7 +1,3 @@
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-
 # Service Account for GKE
 resource "google_service_account" "terraform_gke" {
   account_id   = "terraform-gke"
