@@ -5,7 +5,7 @@ provider "google" {
 
 # Storage bucket to store the function code
 resource "google_storage_bucket" "function_bucket" {
-  name          = "${var.project_id}-functions"
+  name          = "test-functions"
   location      = var.region
   force_destroy = true
 }

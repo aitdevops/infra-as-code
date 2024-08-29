@@ -1,4 +1,8 @@
-# GKE Cluster with Workload Identity
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
+
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
@@ -12,7 +16,7 @@ resource "google_container_cluster" "primary" {
   node_locations = [var.zone]
 
   ip_allocation_policy {
-    cluster_secondary_range_name = "pods"
+    cluster_secondary_range_name  = "pods"
     services_secondary_range_name = "services"
   }
 
@@ -50,27 +54,30 @@ resource "google_container_cluster" "primary" {
   deletion_protection = false  # Disable deletion protection here
 }
 
-# Node Pool with Service Account
-resource "google_container_node_pool" "node_pools" {
-  for_each = { for np in var.node_pools : np.name => np }
+# Node Pool for Frontend Workloads
+resource "google_container_node_pool" "frontend_pool" {
+  cluster  = google_container_cluster.primary.name
+  location = var.region
 
-  cluster    = google_container_cluster.primary.name
-  location   = var.region
-  node_count = each.value.node_count
+  node_count = 1
 
   node_config {
-    machine_type = each.value.node_machine_type
-    service_account = var.gke_service_account_email  # Assign the service account to the node pool
+    machine_type    = "e2-medium"
+    service_account = var.gke_service_account_email
 
-    preemptible  = false
+    labels = {
+      role = "frontend-pool"
+    }
+
+    # No taints for frontend, allowing all pods with matching affinity to be scheduled
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
 
   autoscaling {
-    min_node_count = each.value.min_node_count
-    max_node_count = each.value.max_node_count
+    min_node_count = 1
+    max_node_count = 1
   }
 
   management {
@@ -84,6 +91,46 @@ resource "google_container_node_pool" "node_pools" {
   }
 }
 
+# Node Pool for Backend Workloads
+resource "google_container_node_pool" "backend_pool" {
+  cluster  = google_container_cluster.primary.name
+  location = var.region
+
+  node_count = 1
+
+  node_config {
+    machine_type    = "e2-medium"
+    service_account = var.gke_service_account_email
+
+    labels = {
+      role = "backend-pool"
+    }
+
+    # No taints for backend, allowing all pods with matching affinity to be scheduled
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 1
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+}
+
+
+
+
 # IAM Binding for Workload Identity
 resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
   service_account_id = var.gke_service_account_name
@@ -92,11 +139,16 @@ resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
   members = [
     "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
     "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
   ]
 }
 
+# Kubernetes Provider Configuration
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  config_path = "~/.kube/config"  # Use your local kubeconfig file
 }
 
 # Kubernetes Service Account
@@ -111,3 +163,4 @@ resource "kubernetes_service_account" "ksa" {
     }
   }
 }
+

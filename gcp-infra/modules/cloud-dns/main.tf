@@ -63,7 +63,7 @@ resource "google_dns_record_set" "e_record" {
 
   rrdatas = [var.a_record_ip]
 }
-#####################approval########################
+#####################databse########################
 resource "google_dns_record_set" "f_record" {
   name         = "${var.database_service}."
   type         = "A"
@@ -71,4 +71,13 @@ resource "google_dns_record_set" "f_record" {
   managed_zone = google_dns_managed_zone.dns_zone.name
 
   rrdatas = [var.db_ip]
+}
+#####################databse########################
+resource "google_dns_record_set" "redis_record" {
+  name         = "${var.redis_service}."
+  type         = "A"
+  ttl          = 300
+  managed_zone = google_dns_managed_zone.dns_zone.name
+
+  rrdatas = [var.redis_ip]
 }

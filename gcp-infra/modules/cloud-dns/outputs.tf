@@ -34,5 +34,9 @@ output "e_record" {
 }
 output "f_record" {
   description = "The IP address set in the database record"
-  value       = google_dns_record_set.e_record.rrdatas[0]
+  value       = google_dns_record_set.f_record.rrdatas[0]
+}
+output "redis_record" {
+  description = "The IP address set in the redis record"
+  value       = google_dns_record_set.redis_record.rrdatas[0]
 }
