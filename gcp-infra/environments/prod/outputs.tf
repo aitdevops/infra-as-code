@@ -54,6 +54,14 @@ output "e_record" {
   description = "The IP address set in the approval record"
   value       = module.cloud-dns.e_record
 }
+output "f_record" {
+  description = "The IP address set in the db record"
+  value       = module.cloud-dns.f_record
+}
+output "redis_record" {
+  description = "The IP address set in the redis record"
+  value       = module.cloud-dns.redis_record
+}
 
 
 #####################Cloud-Storage########################

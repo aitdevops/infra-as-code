@@ -100,6 +100,10 @@ variable "database_service" {
   description = "site url"
   type        = string
 }
+variable "redis_service" {
+  description = "site url"
+  type        = string
+}
 
 variable "dns_managed_zone" {
   description = "The name of the DNS managed zone"
@@ -111,7 +115,11 @@ variable "a_record_ip" {
   type        = string
 }
 variable "db_ip" {
-  description = "The IP address to set in the site record"
+  description = "The IP address to set in the db record"
+  type        = string
+}
+variable "redis_ip" {
+  description = "The IP address to set in the redisrecord"
   type        = string
 }
 ##################Cloud-Storage########################
