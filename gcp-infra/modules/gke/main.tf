@@ -131,36 +131,32 @@ resource "google_container_node_pool" "backend_pool" {
 
 
 
-# IAM Binding for Workload Identity
-resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
-  service_account_id = var.gke_service_account_name
-  role               = "roles/iam.workloadIdentityUser"
+# # IAM Binding for Workload Identity
+# resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
+#   service_account_id = var.gke_service_account_name
+#   role               = "roles/iam.workloadIdentityUser"
 
-  members = [
-    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
-  ]
-}
+#   members = [
+#     "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+#     "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
+#     "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
+#     "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
+#     "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
+#     "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
+#   ]
+# }
 
-# Kubernetes Provider Configuration
-provider "kubernetes" {
-  config_path = "~/.kube/config"  # Use your local kubeconfig file
-}
 
-# Kubernetes Service Account
-resource "kubernetes_service_account" "ksa" {
-  for_each = toset(var.namespaces)
+# # Kubernetes Service Account
+# resource "kubernetes_service_account" "ksa" {
+#   for_each = toset(var.namespaces)
 
-  metadata {
-    name      = "k8s-service-account"
-    namespace = each.value  # Create the service account in each namespace
-    annotations = {
-      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
-    }
-  }
-}
+#   metadata {
+#     name      = "k8s-service-account"
+#     namespace = each.value  # Create the service account in each namespace
+#     annotations = {
+#       "iam.gke.io/gcp-service-account" = var.gke_service_account_email
+#     }
+#   }
+# }
 
