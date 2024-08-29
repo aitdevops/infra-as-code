@@ -1,9 +1,3 @@
-provider "google" {
-  project     = var.project_id
-  region      = var.region
-  credentials = file(var.credentials_file_path)
-}
-
 # Step 1: Service Account
 module "service_account" {
   source      = "../../modules/service-account"
