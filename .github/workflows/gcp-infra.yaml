@@ -32,6 +32,10 @@ jobs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.5.6
+        
+    - name: List Google Cloud Storage Buckets
+      run: gsutil ls
+      shell: bash
 
     - name: Initialize Terraform
       working-directory: ./gcp-infra/environments/prod
