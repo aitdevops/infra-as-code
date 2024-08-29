@@ -26,11 +26,6 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
 
-    - name: Create a Test Storage Bucket
-      run: |
-        gsutil mb -l us-central1 gs://test-bucket-${{ secrets.PROJECT_ID }}-$(date +%s)/
-      shell: bash
-
     - name: List Google Cloud Storage Buckets
       run: gsutil ls
       shell: bash
