@@ -26,7 +26,7 @@ jobs:
     - name: Decode and Decrypt terraform.tfvars
       run: |
         echo "${{ secrets.TERRAFORM_TFVARS_ENCRYPTED }}" | base64 --decode > terraform.tfvars.gpg
-        gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" --output terraform.tfvars terraform.tfvars.gpg
+        gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GPG_PASSPHRASE }}" --output terraform.tfvars terraform.tfvars.gpg
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
