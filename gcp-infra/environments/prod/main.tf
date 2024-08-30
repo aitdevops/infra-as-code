@@ -24,16 +24,19 @@ module "artifact-repository" {
 
 # Step 4: GKE Cluster
 module "gke" {
-  source       = "../../modules/gke"
-  project_id   = var.project_id
-  cluster_name = var.cluster_name
-  vpc_name     = module.vpc.vpc_name
-  subnet_name  = module.subnet.private_subnet_name
-  node_pools   = var.node_pools
-  namespaces   = var.namespaces
-  region       = var.region
-  zone         = var.zone
+  source               = "../../modules/gke"
+  project_id           = var.project_id
+  cluster_name         = var.cluster_name
+  vpc_name             = module.vpc.vpc_name
+  subnet_name          = module.subnet.private_subnet_name
+  node_pools           = var.node_pools
+  namespaces           = var.namespaces
+  region               = var.region
+  zone                 = var.zone
+  gke_service_account_email = var.gke_service_account_email
+  gke_service_account_name  = var.gke_service_account_name
 }
+
 
 # Step 5: Cloud DNS
 module "cloud_dns" {

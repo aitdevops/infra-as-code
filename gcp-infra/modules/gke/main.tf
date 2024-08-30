@@ -46,7 +46,7 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  deletion_protection = false  # Disable deletion protection here.
+  deletion_protection = false  # Disable deletion protection here
 }
 
 # Node Pool for Frontend Workloads
@@ -59,6 +59,7 @@ resource "google_container_node_pool" "frontend_pool" {
   node_config {
     machine_type    = "e2-medium"
     service_account = var.gke_service_account_email
+
     labels = {
       role = "frontend-pool"
     }
