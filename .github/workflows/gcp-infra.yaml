@@ -1,13 +1,32 @@
+name: Terraform Apply
+
+# Manual trigger added here
+on:
+  workflow_dispatch:
+
 permissions:
   id-token: write
   contents: read
 
-steps:
-- name: Authenticate to Google Cloud
-  uses: google-github-actions/auth@v1
-  with:
-    workload_identity_provider: projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool
-    service_account: aitdevops-tf-apply@${PROJECT_ID}.iam.gserviceaccount.com
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
 
-- name: Terraform Apply
-  run: terraform apply -auto-approve
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool
+        service_account: aitdevops-tf-apply@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
