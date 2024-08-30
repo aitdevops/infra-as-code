@@ -31,6 +31,9 @@ jobs:
           gpg --batch --yes --passphrase="${GPG_PASSPHRASE}" -o gcp-infra/environments/prod/terraform.tfvars -d gcp-infra/environments/prod/terraform.tfvars.gpg
           rm gcp-infra/environments/prod/terraform.tfvars.gpg
 
+      - name: Verify terraform.tfvars exists
+        run: ls -al gcp-infra/environments/prod/
+
       - id: 'plannerAuth'
         if: github.ref != 'refs/heads/main'
         name: 'Authenticate to Google Cloud'
@@ -51,12 +54,12 @@ jobs:
         with:
           terraform_version: 1.4.0
 
+      # Uncomment this section if you want to include terraform fmt check
       # - id: fmt
       #   name: Terraform fmt
       #   run: |
       #     terraform fmt -check gcp-infra/environments/prod/*.tf
       #     terraform fmt -check gcp-infra/modules/**/*.tf
-
 
       - id: init
         name: Terraform Init
