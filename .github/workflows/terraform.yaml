@@ -54,6 +54,7 @@ jobs:
 
       - id: validate
         name: Terraform Validate
+        working-directory: terraform
         run: terraform validate -no-color
 
       - id: plan
