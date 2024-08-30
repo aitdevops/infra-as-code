@@ -13,12 +13,6 @@ output "gke_cluster_master_version" {
   description = "The master version of the GKE cluster"
   value       = module.gke.master_version
 }
-#####################SERVICE-ACCOUNT########################
-
-output "service_account_email" {
-  description = "Service account email"
-  value       = module.service_account.service_account_email
-}
 #####################DNS########################
 output "dns_zone_name" {
   description = "The name of the DNS managed zone"
@@ -61,17 +55,6 @@ output "f_record" {
 output "redis_record" {
   description = "The IP address set in the redis record"
   value       = module.cloud-dns.redis_record
-}
-
-
-#####################Cloud-Storage########################
-output "bucket_name" {
-  description = "The name of bucket"
-  value       = module.cloud_storage.bucket_name
-}
-output "location" {
-  description = "The location of bucket"
-  value       = module.cloud_storage.location
 }
 
 

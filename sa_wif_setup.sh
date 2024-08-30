@@ -1,5 +1,7 @@
-export PROJECT_ID="INSERT-PROJECT-ID"
-export PROJECT_NUMBER="INSERT-PROJECT-NUMBER"
+#!/bin/bash
+
+export PROJECT_ID="devops-projects-426703"
+export PROJECT_NUMBER="664946097791"
 export STATE_BUCKET="terraform-state-aitdevops-env"
 
 # Check if the bucket already exists before trying to create it
@@ -40,6 +42,28 @@ if ! gcloud iam service-accounts describe aitdevops-tf-apply@${PROJECT_ID}.iam.g
       --description="AIT DevOps Terraform Applier" \
       --display-name="AIT DevOps Terraform Applier"
 fi
+
+# Assign required IAM roles to the service accounts
+roles=(
+    "roles/compute.viewer"
+    "roles/compute.securityAdmin"
+    "roles/container.admin"
+    "roles/container.clusterAdmin"
+    "roles/container.developer"
+    "roles/container.serviceAgent"
+    "roles/iam.serviceAccountAdmin"
+    "roles/iam.serviceAccountUser"
+    "roles/resourcemanager.projectIamAdmin"
+    "roles/artifactregistry.admin"
+    "roles/dns.admin"
+    "roles/artifactregistry.reader"
+)
+
+for role in "${roles[@]}"; do
+  gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member=serviceAccount:aitdevops-tf-apply@${PROJECT_ID}.iam.gserviceaccount.com \
+    --role="$role"
+done
 
 # Update IAM policy bindings for the bucket
 gcloud storage buckets add-iam-policy-binding gs://${STATE_BUCKET} \

@@ -13,5 +13,7 @@ terraform.rc
 terraform.tfvars
 .terraform.lock.hcl
 ./modules/cloud-function/sendApprovalEmail.zip
-setup_wif.sh
+sa_wif_setup.sh
+terraform.tfvars.gpg
+terraform.tfvars.gpg.b64
 

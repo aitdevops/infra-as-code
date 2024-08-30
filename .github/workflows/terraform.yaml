@@ -4,12 +4,12 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'terraform/**'
+      - 'gcp-infra/environments/prod/**'
       - '.github/workflows/terraform.yaml'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'terraform/**'
+      - 'gcp-infra/environments/prod/**'
       - '.github/workflows/terraform.yaml'
 
 jobs:
@@ -21,6 +21,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Decrypt terraform.tfvars.gpg.b64
+        env:
+          TERRAFORM_TFVARS_ENCRYPTED: ${{ secrets.TERRAFORM_TFVARS_ENCRYPTED }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "${TERRAFORM_TFVARS_ENCRYPTED}" | base64 --decode > terraform.tfvars.gpg
+          gpg --batch --yes --passphrase="${GPG_PASSPHRASE}" -o terraform.tfvars -d terraform.tfvars.gpg
+          rm terraform.tfvars.gpg
 
       - id: 'plannerAuth'
         if: github.ref != 'refs/heads/main'
@@ -44,23 +53,23 @@ jobs:
 
       - id: fmt
         name: Terraform fmt
-        working-directory: terraform
+        working-directory: gcp-infra/environments/prod
         run: terraform fmt -check
 
       - id: init
         name: Terraform Init
-        working-directory: terraform
+        working-directory: gcp-infra/environments/prod
         run: terraform init -input=false -backend-config="prefix=terraform-demo" -backend-config="bucket=terraform-state-aitdevops-env"
 
       - id: validate
         name: Terraform Validate
-        working-directory: terraform
+        working-directory: gcp-infra/environments/prod
         run: terraform validate -no-color
 
       - id: plan
         name: Terraform Plan
-        working-directory: terraform
-        run: terraform plan -no-color
+        working-directory: gcp-infra/environments/prod
+        run: terraform plan -var-file=terraform.tfvars -no-color
         continue-on-error: true
 
       - uses: actions/github-script@v6
@@ -98,5 +107,5 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: terraform
-        run: terraform apply -auto-approve -input=false
+        working-directory: gcp-infra/environments/prod
+        run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
