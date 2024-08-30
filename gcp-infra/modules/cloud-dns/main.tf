@@ -5,7 +5,7 @@ resource "google_dns_managed_zone" "dns_zone" {
 
 
   dnssec_config {
-    state        = "on"
+    state         = "on"
     non_existence = "nsec3"
   }
 

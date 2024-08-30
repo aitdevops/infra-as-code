@@ -46,7 +46,7 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  deletion_protection = false  # Disable deletion protection here
+  deletion_protection = false # Disable deletion protection here
 }
 
 # Node Pool for Frontend Workloads

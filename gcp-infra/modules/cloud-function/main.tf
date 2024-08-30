@@ -51,8 +51,8 @@ resource "google_cloud_run_service" "send_approval_email" {
 
 # IAM Policy Binding for Cloud Run Invoker
 resource "google_cloud_run_service_iam_member" "invoker" {
-  location    = google_cloud_run_service.send_approval_email.location
-  service     = google_cloud_run_service.send_approval_email.name
-  role        = "roles/run.invoker"
-  member      = "allUsers"
+  location = google_cloud_run_service.send_approval_email.location
+  service  = google_cloud_run_service.send_approval_email.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }

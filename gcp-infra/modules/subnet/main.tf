@@ -1,8 +1,8 @@
 resource "google_compute_subnetwork" "private_subnet" {
-  name          = "${var.vpc_name}-private-subnet"
-  ip_cidr_range = "10.0.1.0/24"
-  region        = var.region
-  network       = var.vpc_name
+  name                     = "${var.vpc_name}-private-subnet"
+  ip_cidr_range            = "10.0.1.0/24"
+  region                   = var.region
+  network                  = var.vpc_name
   private_ip_google_access = true
 
   secondary_ip_range {

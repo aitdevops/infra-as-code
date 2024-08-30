@@ -30,7 +30,7 @@ resource "google_sql_database_instance" "postgres_instance" {
     }
   }
   deletion_protection = false
-  depends_on = [google_service_networking_connection.private_vpc_connection]
+  depends_on          = [google_service_networking_connection.private_vpc_connection]
 }
 
 resource "google_sql_database" "default_database" {

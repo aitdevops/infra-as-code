@@ -11,7 +11,7 @@ resource "google_artifact_registry_repository" "repo" {
     action = "DELETE"
     condition {
       tag_state  = "ANY"
-      older_than = "432000s"  # 5 days in seconds
+      older_than = "432000s" # 5 days in seconds
     }
   }
 
