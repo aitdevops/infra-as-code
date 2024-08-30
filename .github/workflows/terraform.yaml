@@ -55,7 +55,7 @@ jobs:
         name: Terraform fmt
         run: |
           terraform fmt -check gcp-infra/environments/prod/*.tf
-          terraform fmt -check gcp-infra/environments/prod/modules/**/*.tf
+          terraform fmt -check gcp-infra/modules/**/*.tf
 
 
       - id: init
