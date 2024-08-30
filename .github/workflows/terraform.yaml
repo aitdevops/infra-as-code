@@ -53,8 +53,10 @@ jobs:
 
       - id: fmt
         name: Terraform fmt
-        working-directory: gcp-infra/environments/prod
-        run: terraform fmt -check -recursive
+        run: |
+          terraform fmt -check gcp-infra/environments/prod/*.tf
+          terraform fmt -check gcp-infra/environments/prod/modules/**/*.tf
+
 
       - id: init
         name: Terraform Init
