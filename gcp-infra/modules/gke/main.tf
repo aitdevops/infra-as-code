@@ -58,7 +58,7 @@ resource "google_container_node_pool" "frontend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email
+    service_account = var.gke_service_account_name
 
     labels = {
       role = "frontend-pool"
@@ -95,7 +95,7 @@ resource "google_container_node_pool" "backend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email
+    service_account = var.gke_service_account_name
 
     labels = {
       role = "backend-pool"
