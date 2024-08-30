@@ -37,11 +37,11 @@ variable "cluster_location" {
 variable "node_pools" {
   description = "List of node pools with their configurations"
   type = list(object({
-    name               = string
-    node_count         = number
-    node_machine_type  = string
-    min_node_count     = number
-    max_node_count     = number
+    name              = string
+    node_count        = number
+    node_machine_type = string
+    min_node_count    = number
+    max_node_count    = number
   }))
 }
 variable "namespaces" {

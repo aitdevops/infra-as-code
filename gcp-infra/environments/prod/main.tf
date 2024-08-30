@@ -1,38 +1,38 @@
 # Step 1: VPC
 module "vpc" {
-  source      = "../../modules/vpc"
-  project_id  = var.project_id
-  vpc_name    = var.vpc_name
-  region      = var.region
+  source     = "../../modules/vpc"
+  project_id = var.project_id
+  vpc_name   = var.vpc_name
+  region     = var.region
 }
 
 # Step 2: Subnet
 module "subnet" {
-  source      = "../../modules/subnet"
-  project_id  = var.project_id
-  vpc_name    = module.vpc.vpc_name
-  region      = var.region
+  source     = "../../modules/subnet"
+  project_id = var.project_id
+  vpc_name   = module.vpc.vpc_name
+  region     = var.region
 }
 
 # Step 3: Artifact Repository
 module "artifact-repository" {
-  source      = "../../modules/artifact-repository"
-  project_id  = var.project_id
-  region      = var.region
-  zone        = var.zone
+  source     = "../../modules/artifact-repository"
+  project_id = var.project_id
+  region     = var.region
+  zone       = var.zone
 }
 
 # Step 4: GKE Cluster
 module "gke" {
-  source               = "../../modules/gke"
-  project_id           = var.project_id
-  cluster_name         = var.cluster_name
-  vpc_name             = module.vpc.vpc_name
-  subnet_name          = module.subnet.private_subnet_name
-  node_pools           = var.node_pools
-  namespaces           = var.namespaces
-  region               = var.region
-  zone                 = var.zone
+  source       = "../../modules/gke"
+  project_id   = var.project_id
+  cluster_name = var.cluster_name
+  vpc_name     = module.vpc.vpc_name
+  subnet_name  = module.subnet.private_subnet_name
+  node_pools   = var.node_pools
+  namespaces   = var.namespaces
+  region       = var.region
+  zone         = var.zone
 }
 
 # Step 5: Cloud DNS
@@ -56,13 +56,13 @@ module "cloud_dns" {
 
 # Step 6: PostgreSQL
 module "postgresql" {
-  source            = "../../modules/gcp-postgresql"
-  instance_name     = var.postgres_instance_name
-  region            = var.region
-  instance_tier     = var.postgres_instance_tier
-  private_network   = module.vpc.vpc_name
-  project_id        = var.project_id
-  database_name     = var.database_name
+  source          = "../../modules/gcp-postgresql"
+  instance_name   = var.postgres_instance_name
+  region          = var.region
+  instance_tier   = var.postgres_instance_tier
+  private_network = module.vpc.vpc_name
+  project_id      = var.project_id
+  database_name   = var.database_name
 }
 
 # # Step 7: Cloud Function (Optional)
