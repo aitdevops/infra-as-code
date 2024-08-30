@@ -4,11 +4,6 @@ variable "project_id" {
   type        = string
 }
 
-variable "credentials_file_path" {
-  description = "Path to the GCP credentials file"
-  type        = string
-}
-
 variable "region" {
   description = "The GCP region"
   type        = string

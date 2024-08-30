@@ -42,7 +42,6 @@ module "gke" {
 module "cloud-dns" {
   source                = "../../modules/cloud-dns"
   project_id            = var.project_id
-  credentials_file_path = var.credentials_file_path
   domain_name           = var.domain_name
   dns_managed_zone      = var.dns_managed_zone
   a_record_ip           = var.a_record_ip
