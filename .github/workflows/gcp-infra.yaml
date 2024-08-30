@@ -1,6 +1,5 @@
 name: Terraform Apply
 
-# Manual trigger added here
 on:
   workflow_dispatch:
 
