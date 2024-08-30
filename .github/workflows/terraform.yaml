@@ -73,24 +73,24 @@ jobs:
       - id: plan
         name: Terraform Plan
         working-directory: gcp-infra/environments/prod
-        run: terraform plan -var-file=gcp-infra/environments/prod/terraform.tfvars -no-color
+        run: terraform plan -var-file=terraform.tfvars -no-color
         continue-on-error: true
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: "${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const output = `
+            #### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖 \`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`
             
             <details><summary>Show Plan</summary>
             
-            \`\`\`\n
+            \`\`\`
             ${process.env.PLAN}
             \`\`\`
             
@@ -112,4 +112,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
-        run: terraform apply -var-file=gcp-infra/environments/prod/terraform.tfvars -auto-approve -input=false
+        run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
