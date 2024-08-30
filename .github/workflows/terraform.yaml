@@ -1,4 +1,4 @@
-name: Provision 
+name: Terraform Workflow Demo
 
 on:
   push:
@@ -54,7 +54,7 @@ jobs:
       - id: fmt
         name: Terraform fmt
         working-directory: gcp-infra/environments/prod
-        run: terraform fmt -check
+        run: terraform fmt -check -recursive
 
       - id: init
         name: Terraform Init
