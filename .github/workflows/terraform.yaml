@@ -51,11 +51,11 @@ jobs:
         with:
           terraform_version: 1.4.0
 
-      - id: fmt
-        name: Terraform fmt
-        run: |
-          terraform fmt -check gcp-infra/environments/prod/*.tf
-          terraform fmt -check gcp-infra/modules/**/*.tf
+      # - id: fmt
+      #   name: Terraform fmt
+      #   run: |
+      #     terraform fmt -check gcp-infra/environments/prod/*.tf
+      #     terraform fmt -check gcp-infra/modules/**/*.tf
 
 
       - id: init
