@@ -40,20 +40,20 @@ module "gke" {
 
 # Step 5: Cloud DNS
 module "cloud-dns" {
-  source                = "../../modules/cloud-dns"
-  project_id            = var.project_id
-  domain_name           = var.domain_name
-  dns_managed_zone      = var.dns_managed_zone
-  a_record_ip           = var.a_record_ip
-  db_ip                 = var.db_ip
-  redis_ip              = var.redis_ip
-  name                  = var.name
-  argo_service          = var.argo_service
-  auth_service          = var.auth_service
-  user_service          = var.user_service
-  approval_service      = var.approval_service
-  database_service      = var.database_service
-  redis_service         = var.redis_service
+  source           = "../../modules/cloud-dns"
+  project_id       = var.project_id
+  domain_name      = var.domain_name
+  dns_managed_zone = var.dns_managed_zone
+  a_record_ip      = var.a_record_ip
+  db_ip            = var.db_ip
+  redis_ip         = var.redis_ip
+  name             = var.name
+  argo_service     = var.argo_service
+  auth_service     = var.auth_service
+  user_service     = var.user_service
+  approval_service = var.approval_service
+  database_service = var.database_service
+  redis_service    = var.redis_service
 }
 
 # Step 6: PostgreSQL
