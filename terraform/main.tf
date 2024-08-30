@@ -1,5 +1,5 @@
 provider "google" {
-  project = devops-projects-426703
+  project = "devops-projects-426703"
 }
 
 resource "google_service_account" "wif_service_account" {
