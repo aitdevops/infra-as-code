@@ -39,7 +39,7 @@ module "gke" {
 
 
 # Step 5: Cloud DNS
-module "cloud_dns" {
+module "cloud-dns" {
   source                = "../../modules/cloud-dns"
   project_id            = var.project_id
   credentials_file_path = var.credentials_file_path
@@ -58,7 +58,7 @@ module "cloud_dns" {
 }
 
 # Step 6: PostgreSQL
-module "postgresql" {
+module "gcp-postgresql" {
   source          = "../../modules/gcp-postgresql"
   instance_name   = var.postgres_instance_name
   region          = var.region
