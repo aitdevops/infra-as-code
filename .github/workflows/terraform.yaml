@@ -1,4 +1,4 @@
-name: Terraform Workflow Demo
+name: Provision 
 
 on:
   push:
@@ -27,9 +27,9 @@ jobs:
           TERRAFORM_TFVARS_ENCRYPTED: ${{ secrets.TERRAFORM_TFVARS_ENCRYPTED }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          echo "${TERRAFORM_TFVARS_ENCRYPTED}" | base64 --decode > terraform.tfvars.gpg
-          gpg --batch --yes --passphrase="${GPG_PASSPHRASE}" -o terraform.tfvars -d terraform.tfvars.gpg
-          rm terraform.tfvars.gpg
+          echo "${TERRAFORM_TFVARS_ENCRYPTED}" | base64 --decode > gcp-infra/environments/prod/terraform.tfvars.gpg
+          gpg --batch --yes --passphrase="${GPG_PASSPHRASE}" -o gcp-infra/environments/prod/terraform.tfvars -d gcp-infra/environments/prod/terraform.tfvars.gpg
+          rm gcp-infra/environments/prod/terraform.tfvars.gpg
 
       - id: 'plannerAuth'
         if: github.ref != 'refs/heads/main'
@@ -69,7 +69,7 @@ jobs:
       - id: plan
         name: Terraform Plan
         working-directory: gcp-infra/environments/prod
-        run: terraform plan -var-file=terraform.tfvars -no-color
+        run: terraform plan -var-file=gcp-infra/environments/prod/terraform.tfvars -no-color
         continue-on-error: true
 
       - uses: actions/github-script@v6
@@ -108,4 +108,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
-        run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
+        run: terraform apply -var-file=gcp-infra/environments/prod/terraform.tfvars -auto-approve -input=false
