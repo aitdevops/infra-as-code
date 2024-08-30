@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains Terraform configurations for setting up and managing cloud infrastructure across different cloud providers. The current setup includes resources on Google Cloud Platform (GCP), with plans to expand to other clouds and add more features.
+This repository contains Terraform configurations for setting up and managing cloud infrastructure across different cloud providers. The curent setup includes resources on Google Cloud Platform (GCP), with plans to expand to other clouds and add more features.
 
 ## Current Infrastructure
 
