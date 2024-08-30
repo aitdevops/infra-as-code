@@ -34,6 +34,12 @@ jobs:
       - name: Verify terraform.tfvars exists
         run: ls -al gcp-infra/environments/prod/
 
+      - name: Output terraform.tfvars content for debugging
+        run: cat gcp-infra/environments/prod/terraform.tfvars
+
+      - name: Set permissions on terraform.tfvars
+        run: chmod 644 gcp-infra/environments/prod/terraform.tfvars
+
       - id: 'plannerAuth'
         if: github.ref != 'refs/heads/main'
         name: 'Authenticate to Google Cloud'
