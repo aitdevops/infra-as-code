@@ -11,9 +11,16 @@ on:
     paths:
       - 'gcp-infra/environments/prod/**'
       - '.github/workflows/terraform.yaml'
+  workflow_dispatch:  # Allows manual triggering of the workflow, including destroy
+    inputs:
+      destroy:
+        description: 'Run terraform destroy'
+        required: false
+        default: 'false'
 
 jobs:
   terraform:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy == 'false' }}
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -113,3 +120,39 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
+
+  destroy:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Decrypt terraform.tfvars.gpg.b64
+        env:
+          TERRAFORM_TFVARS_ENCRYPTED: ${{ secrets.TERRAFORM_TFVARS_ENCRYPTED }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "${TERRAFORM_TFVARS_ENCRYPTED}" | base64 --decode > gcp-infra/environments/prod/terraform.tfvars.gpg
+          gpg --batch --yes --passphrase="${GPG_PASSPHRASE}" --output gcp-infra/environments/prod/terraform.tfvars --decrypt gcp-infra/environments/prod/terraform.tfvars.gpg
+          rm gcp-infra/environments/prod/terraform.tfvars.gpg
+
+      - name: Set permissions on terraform.tfvars
+        run: chmod 644 gcp-infra/environments/prod/terraform.tfvars
+
+      - name: Authenticate to Google Cloud
+        uses: 'google-github-actions/auth@v1.0.0'
+        with:
+          workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool'
+          service_account: 'aitdevops-tf-apply@devops-projects-426703.iam.gserviceaccount.com'
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.0
+
+      - name: Terraform Init for Destroy
+        working-directory: gcp-infra/environments/prod
+        run: terraform init -input=false -backend-config="prefix=terraform-demo" -backend-config="bucket=terraform-state-aitdevops-env"
+
+      - name: Terraform Destroy
+        working-directory: gcp-infra/environments/prod
+        run: terraform destroy -var-file=terraform.tfvars -auto-approve -input=false
