@@ -57,6 +57,9 @@ roles=(
     "roles/artifactregistry.admin"
     "roles/dns.admin"
     "roles/artifactregistry.reader"
+    "roles/cloudsql.admin"
+    "roles/cloudsql.client"
+    "roles/iam.serviceAccountUser"
 )
 
 for role in "${roles[@]}"; do

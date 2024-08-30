@@ -11,7 +11,7 @@ on:
     paths:
       - 'gcp-infra/environments/prod/**'
       - '.github/workflows/terraform.yaml'
-  workflow_dispatch:  # Allows manual triggering of the workflow, including destroy
+  workflow_dispatch:
     inputs:
       destroy:
         description: 'Run terraform destroy'
