@@ -1,4 +1,4 @@
-name:   
+name: Terraform Workflow Demo
 
 on:
   push:
@@ -11,14 +11,14 @@ on:
     paths:
       - 'gcp-infra/environments/prod/**'
       - '.github/workflows/terraform.yaml'
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   terraform:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-      pull-requests: 'write'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -105,3 +105,23 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
+
+      - name: Deploy Google Cloud Function sendApprovalEmail
+        run: |
+          if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
+            echo "Updating existing Cloud Function"
+            gcloud functions deploy sendApprovalEmail \
+              --runtime nodejs18 \
+              --trigger-http \
+              --allow-unauthenticated \
+              --gen2 \
+              --source=.
+          else
+            echo "Creating new Cloud Function"
+            gcloud functions deploy sendApprovalEmail \
+              --runtime nodejs18 \
+              --trigger-http \
+              --allow-unauthenticated \
+              --gen2 \
+              --source=.
+          fi
