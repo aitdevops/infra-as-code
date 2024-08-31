@@ -15,6 +15,7 @@ module "subnet" {
   region        = var.region
 }
 
+
 # Step 3: Artifact Repository
 module "artifact-repository" {
   source     = "../../modules/artifact-repository"
