@@ -9,3 +9,8 @@ output "nat_router_name" {
 output "nat_gateway_name" {
   value = google_compute_router_nat.nat_gateway.name
 }
+
+
+output "vpc_self_link" {
+  value = google_compute_network.vpc_network.self_link
+}

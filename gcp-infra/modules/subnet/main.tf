@@ -2,7 +2,7 @@ resource "google_compute_subnetwork" "private_subnet" {
   name                     = "${var.vpc_name}-private-subnet"
   ip_cidr_range            = "10.0.1.0/24"
   region                   = var.region
-  network                  = google_compute_network.vpc_network.name
+  network                  = var.vpc_self_link
   private_ip_google_access = true
 
   secondary_ip_range {
@@ -14,15 +14,19 @@ resource "google_compute_subnetwork" "private_subnet" {
     range_name    = "services"
     ip_cidr_range = "10.0.16.0/21"
   }
-
-  depends_on = [google_compute_network.vpc_network]
 }
 
 resource "google_compute_subnetwork" "public_subnet" {
   name          = "${var.vpc_name}-public-subnet"
   ip_cidr_range = "10.0.4.0/24"
   region        = var.region
-  network       = google_compute_network.vpc_network.name
+  network       = var.vpc_self_link
+}
 
-  depends_on = [google_compute_network.vpc_network]
+output "private_subnet_name" {
+  value = google_compute_subnetwork.private_subnet.name
+}
+
+output "public_subnet_name" {
+  value = google_compute_subnetwork.public_subnet.name
 }
