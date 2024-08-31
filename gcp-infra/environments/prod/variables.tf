@@ -128,3 +128,20 @@ variable "redis_ip" {
   description = "The IP address to set in the redisrecord"
   type        = string
 }
+
+
+variable "vpc_self_link" {
+  description = "The self-link of the VPC network"
+  type        = string
+}
+
+variable "vpc_name" {
+  description = "The name of the VPC network"
+  type        = string
+}
+
+variable "region" {
+  description = "The region where the resources will be created"
+  type        = string
+}
+
