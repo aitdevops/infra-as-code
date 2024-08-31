@@ -35,21 +35,11 @@ jobs:
       - name: Set permissions on terraform.tfvars
         run: chmod 644 gcp-infra/environments/prod/terraform.tfvars
 
-      - id: 'plannerAuth'
-        if: github.ref != 'refs/heads/main'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1.0.0'
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool'
-          service_account: 'aitdevops-tf-plan@devops-projects-426703.iam.gserviceaccount.com'
-
-      - id: 'applierAuth'
-        if: github.ref == 'refs/heads/main'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1.0.0'
-        with:
-          workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool'
-          service_account: 'aitdevops-tf-apply@devops-projects-426703.iam.gserviceaccount.com'
+          workload_identity_provider: "projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID"
+          service_account: "SERVICE_ACCOUNT_EMAIL"
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -105,9 +95,6 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
-
-      - name: Authenticate with Google Cloud
-        run: gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
 
       - name: Deploy Google Cloud Function sendApprovalEmail
         run: |
