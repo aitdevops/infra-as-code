@@ -22,11 +22,3 @@ resource "google_compute_subnetwork" "public_subnet" {
   region        = var.region
   network       = var.vpc_self_link
 }
-
-output "private_subnet_name" {
-  value = google_compute_subnetwork.private_subnet.name
-}
-
-output "public_subnet_name" {
-  value = google_compute_subnetwork.public_subnet.name
-}
