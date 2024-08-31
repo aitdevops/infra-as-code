@@ -1,4 +1,4 @@
-name: Terraform Apply Workflow
+name: Terraform Workflow Demo
 
 on:
   push:
@@ -35,11 +35,21 @@ jobs:
       - name: Set permissions on terraform.tfvars
         run: chmod 644 gcp-infra/environments/prod/terraform.tfvars
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+      - id: 'plannerAuth'
+        if: github.ref != 'refs/heads/main'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1.0.0'
         with:
-          workload_identity_provider: "projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID"
-          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+          workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool'
+          service_account: 'aitdevops-tf-plan@devops-projects-426703.iam.gserviceaccount.com'
+
+      - id: 'applierAuth'
+        if: github.ref == 'refs/heads/main'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1.0.0'
+        with:
+          workload_identity_provider: 'projects/664946097791/locations/global/workloadIdentityPools/aitdevops-pool/providers/aitdevops-pool'
+          service_account: 'aitdevops-tf-apply@devops-projects-426703.iam.gserviceaccount.com'
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -96,24 +106,22 @@ jobs:
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
 
-      - name: Deploy Google Cloud Function sendApprovalEmail
-        run: |
-          if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
-            echo "Updating existing Cloud Function"
-            gcloud functions deploy sendApprovalEmail \
-              --runtime nodejs18 \
-              --trigger-http \
-              --allow-unauthenticated \
-              --gen2 \
-              --region=us-central1 \
-              --source=.
-          else
-            echo "Creating new Cloud Function"
-            gcloud functions deploy sendApprovalEmail \
-              --runtime nodejs18 \
-              --trigger-http \
-              --allow-unauthenticated \
-              --gen2 \
-              --region=us-central1 \
-              --source=.
-          fi
+      # - name: Deploy Google Cloud Function sendApprovalEmail
+      #   run: |
+      #     if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
+      #       echo "Updating existing Cloud Function"
+      #       gcloud functions deploy sendApprovalEmail \
+      #         --runtime nodejs18 \
+      #         --trigger-http \
+      #         --allow-unauthenticated \
+      #         --gen2 \
+      #         --source=.
+      #     else
+      #       echo "Creating new Cloud Function"
+      #       gcloud functions deploy sendApprovalEmail \
+      #         --runtime nodejs18 \
+      #         --trigger-http \
+      #         --allow-unauthenticated \
+      #         --gen2 \
+      #         --source=.
+      #     fi
