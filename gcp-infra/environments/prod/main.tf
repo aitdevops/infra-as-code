@@ -1,4 +1,4 @@
-# Step 1: VPC
+# VPC Module
 module "vpc" {
   source     = "../../modules/vpc"
   project_id = var.project_id
@@ -6,7 +6,7 @@ module "vpc" {
   region     = var.region
 }
 
-# Step 2: Subnet
+# Subnet Module
 module "subnet" {
   source        = "../../modules/subnet"
   project_id    = var.project_id
@@ -57,7 +57,7 @@ module "cloud-dns" {
   redis_service    = var.redis_service
 }
 
-# Step 6: PostgreSQL
+# PostgreSQL Module
 module "gcp-postgresql" {
   source          = "../../modules/gcp-postgresql"
   instance_name   = var.postgres_instance_name
