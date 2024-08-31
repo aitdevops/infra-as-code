@@ -8,10 +8,11 @@ module "vpc" {
 
 # Step 2: Subnet
 module "subnet" {
-  source     = "../../modules/subnet"
-  project_id = var.project_id
-  vpc_name   = module.vpc.vpc_name
-  region     = var.region
+  source        = "../../modules/subnet"
+  project_id    = var.project_id
+  vpc_name      = module.vpc.vpc_name
+  vpc_self_link = module.vpc.vpc_self_link
+  region        = var.region
 }
 
 # Step 3: Artifact Repository
@@ -37,7 +38,6 @@ module "gke" {
   gke_service_account_name  = var.gke_service_account_name
 }
 
-
 # Step 5: Cloud DNS
 module "cloud-dns" {
   source           = "../../modules/cloud-dns"
@@ -62,7 +62,7 @@ module "gcp-postgresql" {
   instance_name   = var.postgres_instance_name
   region          = var.region
   instance_tier   = var.postgres_instance_tier
-  private_network = module.vpc.vpc_name
+  private_network = module.vpc.vpc_self_link
   project_id      = var.project_id
   database_name   = var.database_name
 }
