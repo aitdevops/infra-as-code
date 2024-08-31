@@ -129,9 +129,3 @@ variable "redis_ip" {
   type        = string
 }
 
-
-variable "vpc_self_link" {
-  description = "The self-link of the VPC network"
-  type        = string
-}
-
