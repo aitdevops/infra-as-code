@@ -39,7 +39,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: "projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID"
-          service_account: "SERVICE_ACCOUNT_EMAIL"
+          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
       - uses: hashicorp/setup-terraform@v2
         with:
