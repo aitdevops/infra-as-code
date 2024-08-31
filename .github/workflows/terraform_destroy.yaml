@@ -1,12 +1,16 @@
 name: Terraform Destroy Workflow
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_dispatch:
     inputs:
       destroy:
         description: 'Run terraform destroy'
         required: true
         default: 'true'
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   destroy:
