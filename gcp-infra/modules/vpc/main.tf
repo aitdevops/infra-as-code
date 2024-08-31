@@ -5,7 +5,7 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_compute_router" "nat_router" {
   name    = "${var.vpc_name}-router"
-  network = google_compute_network.vpc_network.name
+  network = google_compute_network.vpc_network.self_link
   region  = var.region
 }
 

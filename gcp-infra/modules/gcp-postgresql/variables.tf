@@ -1,29 +1,29 @@
+variable "vpc_self_link" {
+  description = "The self-link of the VPC network"
+  type        = string
+}
+
 variable "instance_name" {
-  description = "The name of the PostgreSQL instance."
+  description = "The name of the SQL instance"
   type        = string
 }
 
 variable "region" {
-  description = "The region where the PostgreSQL instance will be created."
+  description = "The region where the SQL instance will be created"
   type        = string
 }
 
 variable "instance_tier" {
-  description = "The machine type tier for the PostgreSQL instance."
-  type        = string
-}
-
-variable "private_network" {
-  description = "The VPC network to attach the PostgreSQL instance to."
-  type        = string
-}
-
-variable "database_name" {
-  description = "The name of the default database to create."
+  description = "The tier (machine type) for the SQL instance"
   type        = string
 }
 
 variable "project_id" {
-  description = "The ID of the project in which resources will be created."
+  description = "The GCP project ID"
+  type        = string
+}
+
+variable "database_name" {
+  description = "The name of the default database to create in the instance"
   type        = string
 }
