@@ -63,7 +63,7 @@ module "gcp-postgresql" {
   instance_name   = var.postgres_instance_name
   region          = var.region
   instance_tier   = var.postgres_instance_tier
-  private_network = module.vpc.vpc_self_link
+  vpc_self_link   = module.vpc.vpc_self_link  # Corrected argument
   project_id      = var.project_id
   database_name   = var.database_name
 }
