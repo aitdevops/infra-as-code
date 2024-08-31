@@ -106,6 +106,9 @@ jobs:
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
 
+      - name: Authenticate with Google Cloud
+        run: gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+
       - name: Deploy Google Cloud Function sendApprovalEmail
         run: |
           if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
@@ -115,6 +118,7 @@ jobs:
               --trigger-http \
               --allow-unauthenticated \
               --gen2 \
+              --region=us-central1 \
               --source=.
           else
             echo "Creating new Cloud Function"
@@ -123,5 +127,6 @@ jobs:
               --trigger-http \
               --allow-unauthenticated \
               --gen2 \
+              --region=us-central1 \
               --source=.
           fi
