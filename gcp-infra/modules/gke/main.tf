@@ -3,9 +3,10 @@ provider "google" {
   project = var.project_id
   region  = var.region
 }
+
 # Kubernetes Provider Configuration
 provider "kubernetes" {
-  config_path = "~/.kube/config"  # Use the path to the kubeconfig file set up by the GitHub Action
+  config_path = "${path.module}/kubeconfig"  # Use the correct path set in the workflow
 }
 
 

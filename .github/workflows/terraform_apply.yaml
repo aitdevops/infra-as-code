@@ -23,6 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+
       - name: Decrypt terraform.tfvars.gpg.b64
         env:
           TERRAFORM_TFVARS_ENCRYPTED: ${{ secrets.TERRAFORM_TFVARS_ENCRYPTED }}
