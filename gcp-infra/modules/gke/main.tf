@@ -152,14 +152,14 @@ resource "null_resource" "wait_for_cluster" {
 
 # Kubernetes Provider Configuration
 provider "kubernetes" {
-  host                   = google_container_cluster.primary.endpoint
+  host                   = "https://${google_container_cluster.primary.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
 }
 
 # IAM Binding for Workload Identity
 resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
-  service_account_id = var.gke_service_account_name
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.gke_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
 
   members = [
