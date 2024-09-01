@@ -55,6 +55,12 @@ jobs:
         with:
           terraform_version: 1.4.0
 
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --zone ${{ secrets.CLUSTER_ZONE }} --project ${{ secrets.PROJECT_ID }}
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+
       - name: Terraform Init
         working-directory: gcp-infra/environments/prod
         run: terraform init -input=false -backend-config="prefix=terraform-demo" -backend-config="bucket=terraform-state-aitdevops-env"
@@ -100,13 +106,6 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
-
-      - name: Configure kubectl
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --zone ${{ secrets.CLUSTER_ZONE }} --project ${{ secrets.PROJECT_ID }}
-        env:
-          KUBECONFIG: ${{ github.workspace }}/kubeconfig
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'

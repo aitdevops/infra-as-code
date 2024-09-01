@@ -3,19 +3,11 @@ provider "google" {
   project = var.project_id
   region  = var.region
 }
-
-# Data source to get the GKE cluster information
-data "google_container_cluster" "primary" {
-  name     = google_container_cluster.primary.name
-  location = var.region
-}
-
-# Kubernetes Provider Configuration using the data source
+# Kubernetes Provider Configuration
 provider "kubernetes" {
-  host                   = data.google_container_cluster.primary.endpoint
-  token                  = data.google_container_cluster.primary.access_token
-  cluster_ca_certificate = base64decode(data.google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+  config_path = "~/.kube/config"  # Use the path to the kubeconfig file set up by the GitHub Action
 }
+
 
 # GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
