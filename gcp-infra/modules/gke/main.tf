@@ -153,7 +153,6 @@ provider "kubernetes" {
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
   load_config_file       = false
-  depends_on             = [null_resource.wait_for_cluster]
 }
 
 # IAM Binding for Workload Identity
@@ -169,6 +168,8 @@ resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
     "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
     "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
   ]
+
+  depends_on = [null_resource.wait_for_cluster]
 }
 
 # Kubernetes Service Accounts
