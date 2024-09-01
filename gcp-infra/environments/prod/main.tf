@@ -24,7 +24,9 @@ module "artifact-repository" {
   zone       = var.zone
 }
 
-# Step 4: GKE Cluster
+data "google_client_config" "default" {
+}
+
 module "gke" {
   source                    = "../../modules/gke"
   project_id                = var.project_id
@@ -38,7 +40,6 @@ module "gke" {
   gke_service_account_email = var.gke_service_account_email
   gke_service_account_name  = var.gke_service_account_name
   kubernetes_token          = data.google_client_config.default.access_token  # Pass the token to the module
-
 }
 
 # Step 5: Cloud DNS
