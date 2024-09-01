@@ -60,6 +60,8 @@ roles=(
     "roles/cloudsql.admin"
     "roles/cloudsql.client"
     "roles/iam.serviceAccountUser"
+    "roles/cloudfunctions.viewer"
+    "roles/cloudfunctions.developer"
 )
 
 for role in "${roles[@]}"; do
