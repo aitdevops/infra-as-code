@@ -53,7 +53,7 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  deletion_protection = false # Disable deletion protection here
+  deletion_protection = false
 }
 
 # Node Pool for Frontend Workloads
@@ -65,7 +65,7 @@ resource "google_container_node_pool" "frontend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email  # Use the variable here
+    service_account = var.gke_service_account_email
 
     labels = {
       role = "frontend-pool"
@@ -101,7 +101,7 @@ resource "google_container_node_pool" "backend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email  # Use the variable here
+    service_account = var.gke_service_account_email
 
     labels = {
       role = "backend-pool"
@@ -128,5 +128,37 @@ resource "google_container_node_pool" "backend_pool" {
   }
 }
 
+# IAM Binding for Workload Identity
+resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
+  service_account_id = var.gke_service_account_name
+  role               = "roles/iam.workloadIdentityUser"
 
+  members = [
+    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
+  ]
+}
 
+# Kubernetes Provider Configuration
+provider "kubernetes" {
+  host                   = data.google_container_cluster.primary.endpoint
+  token                  = data.google_container_cluster.primary.access_token
+  cluster_ca_certificate = base64decode(data.google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+}
+
+# Kubernetes Service Accounts
+resource "kubernetes_service_account" "ksa" {
+  for_each = toset(var.namespaces)
+
+  metadata {
+    name      = "k8s-service-account"
+    namespace = each.value
+    annotations = {
+      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
+    }
+  }
+}
