@@ -1,3 +1,10 @@
+# Google Provider Configuration
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
+
+# GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
@@ -58,13 +65,12 @@ resource "google_container_node_pool" "frontend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email
+    service_account = var.gke_service_account_email  # Use the variable here
 
     labels = {
       role = "frontend-pool"
     }
 
-    # No taints for frontend, allowing all pods with matching affinity to be scheduled
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -95,13 +101,12 @@ resource "google_container_node_pool" "backend_pool" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = var.gke_service_account_email
+    service_account = var.gke_service_account_email  # Use the variable here
 
     labels = {
       role = "backend-pool"
     }
 
-    # No taints for backend, allowing all pods with matching affinity to be scheduled
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -120,5 +125,40 @@ resource "google_container_node_pool" "backend_pool" {
   upgrade_settings {
     max_surge       = 1
     max_unavailable = 0
+  }
+}
+
+# IAM Binding for Workload Identity
+resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
+  service_account_id = var.gke_service_account_email
+  role               = "roles/iam.workloadIdentityUser"
+
+  members = [
+    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
+  ]
+}
+
+# Kubernetes Provider Configuration using Google Provider
+provider "kubernetes" {
+  host                   = google_container_cluster.primary.endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
+}
+
+# Kubernetes Service Accounts
+resource "kubernetes_service_account" "ksa" {
+  for_each = toset(var.namespaces)
+
+  metadata {
+    name      = "k8s-service-account"
+    namespace = each.value  # Create the service account in each namespace
+    annotations = {
+      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
+    }
   }
 }
