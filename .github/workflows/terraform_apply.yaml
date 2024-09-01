@@ -106,24 +106,24 @@ jobs:
         working-directory: gcp-infra/environments/prod
         run: terraform apply -var-file=terraform.tfvars -auto-approve -input=false
 
-      - name: Deploy or Update Google Cloud Function sendApprovalEmail
-        run: |
-          if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
-            echo "Updating existing Cloud Function"
-            gcloud functions deploy sendApprovalEmail \
-              --runtime nodejs18 \
-              --trigger-http \
-              --allow-unauthenticated \
-              --gen2 \
-              --region=us-central1 \
-              --source=.
-          else
-            echo "Creating new Cloud Function"
-            gcloud functions deploy sendApprovalEmail \
-              --runtime nodejs18 \
-              --trigger-http \
-              --allow-unauthenticated \
-              --gen2 \
-              --region=us-central1 \
-              --source=.
-          fi
+      # - name: Deploy or Update Google Cloud Function sendApprovalEmail
+      #   run: |
+      #     if gcloud functions describe sendApprovalEmail --gen2 --region=us-central1; then
+      #       echo "Updating existing Cloud Function"
+      #       gcloud functions deploy sendApprovalEmail \
+      #         --runtime nodejs18 \
+      #         --trigger-http \
+      #         --allow-unauthenticated \
+      #         --gen2 \
+      #         --region=us-central1 \
+      #         --source=.
+      #     else
+      #       echo "Creating new Cloud Function"
+      #       gcloud functions deploy sendApprovalEmail \
+      #         --runtime nodejs18 \
+      #         --trigger-http \
+      #         --allow-unauthenticated \
+      #         --gen2 \
+      #         --region=us-central1 \
+      #         --source=.
+      #     fi
