@@ -113,7 +113,6 @@ jobs:
           mkdir -p /home/runner/.kube
           cp ~/.kube/config /home/runner/.kube/config
 
-
       - name: Apply Kubernetes Service Accounts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
