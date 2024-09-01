@@ -1,5 +1,3 @@
-# gke module: main.tf
-
 # Google Provider Configuration
 provider "google" {
   project = var.project_id
@@ -128,41 +126,4 @@ resource "google_container_node_pool" "backend_pool" {
     max_surge       = 1
     max_unavailable = 0
   }
-}
-
-# IAM Binding for Workload Identity
-resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
-  service_account_id = var.gke_service_account_email
-  role               = "roles/iam.workloadIdentityUser"
-
-  members = [
-    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
-  ]
-}
-
-# Kubernetes Provider Configuration using Google Provider
-provider "kubernetes" {
-  host                   = google_container_cluster.primary.endpoint
-  token                  = var.kubernetes_token  # Use the token passed to the module
-  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
-}
-
-# Kubernetes Service Accounts
-resource "kubernetes_service_account" "ksa" {
-  for_each = toset(var.namespaces)
-
-  metadata {
-    name      = "k8s-service-account"
-    namespace = each.value  # Create the service account in each namespace
-    annotations = {
-      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
-    }
-  }
-
-  depends_on = [google_container_cluster.primary]
 }

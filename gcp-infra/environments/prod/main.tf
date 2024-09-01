@@ -16,16 +16,6 @@ module "subnet" {
 }
 
 
-# Root module: main.tf
-
-# Data source to retrieve Google Cloud client config
-data "google_client_config" "default" {}
-
-# Use a local variable to store the Kubernetes token
-locals {
-  kubernetes_token = data.google_client_config.default.access_token
-}
-
 # Step 3: Artifact Repository
 module "artifact-repository" {
   source     = "../../modules/artifact-repository"
@@ -47,13 +37,8 @@ module "gke" {
   zone                      = var.zone
   gke_service_account_email = var.gke_service_account_email
   gke_service_account_name  = var.gke_service_account_name
-  kubernetes_token          = local.kubernetes_token  # Use the token from locals
 }
 
-# Optional: Output the Kubernetes token for debugging (remove before production)
-output "kubernetes_token" {
-  value = local.kubernetes_token
-}
 
 
 # Step 5: Cloud DNS

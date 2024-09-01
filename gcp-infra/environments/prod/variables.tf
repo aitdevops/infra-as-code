@@ -129,7 +129,3 @@ variable "redis_ip" {
   type        = string
 }
 
-variable "kubernetes_token" {
-  description = "The token used to authenticate the Kubernetes provider"
-  type        = string
-}

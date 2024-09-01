@@ -51,7 +51,3 @@ variable "gke_service_account_name" {
   description = "The name of the GKE service account"
   type        = string
 }
-variable "kubernetes_token" {
-  description = "The token used to authenticate the Kubernetes provider"
-  type        = string
-}
