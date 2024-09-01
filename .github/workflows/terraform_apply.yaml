@@ -110,8 +110,9 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --zone ${{ secrets.CLUSTER_ZONE }} --project ${{ secrets.PROJECT_ID }}
-          mkdir -p ~/.kube
+          mkdir -p /home/runner/.kube
           cp ~/.kube/config /home/runner/.kube/config
+
 
       - name: Apply Kubernetes Service Accounts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
