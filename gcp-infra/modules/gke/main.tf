@@ -59,6 +59,78 @@ resource "google_container_cluster" "primary" {
   deletion_protection = false
 }
 
+# Node Pool for Frontend Workloads
+resource "google_container_node_pool" "frontend_pool" {
+  cluster  = google_container_cluster.primary.name
+  location = var.region
+
+  node_count = 1
+
+  node_config {
+    machine_type    = "e2-medium"
+    service_account = var.gke_service_account_email
+
+    labels = {
+      role = "frontend-pool"
+    }
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 1
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+}
+
+# Node Pool for Backend Workloads
+resource "google_container_node_pool" "backend_pool" {
+  cluster  = google_container_cluster.primary.name
+  location = var.region
+
+  node_count = 1
+
+  node_config {
+    machine_type    = "e2-medium"
+    service_account = var.gke_service_account_email
+
+    labels = {
+      role = "backend-pool"
+    }
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 1
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+}
+
 # Wait for GKE Cluster to be Ready
 resource "null_resource" "wait_for_cluster" {
   provisioner "local-exec" {
@@ -85,23 +157,30 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
 }
 
-# IAM Binding for Workload Identity (ExternalDNS Only)
-resource "google_service_account_iam_binding" "external_dns_workload_identity_binding" {
+# IAM Binding for Workload Identity
+resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
   service_account_id = "projects/${var.project_id}/serviceAccounts/${var.gke_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
 
   members = [
+    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
     "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[ingress-nginx/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[argocd/k8s-service-account]",
+    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
   ]
 
   depends_on = [null_resource.wait_for_cluster]
 }
 
-# Kubernetes Service Account for ExternalDNS
-resource "kubernetes_service_account" "external_dns_ksa" {
+# Kubernetes Service Accounts
+resource "kubernetes_service_account" "ksa" {
+  for_each = toset(var.namespaces)
+
   metadata {
     name      = "k8s-service-account"
-    namespace = "external-dns"
+    namespace = each.value
     annotations = {
       "iam.gke.io/gcp-service-account" = var.gke_service_account_email
     }
