@@ -71,7 +71,7 @@ module "gcp-postgresql" {
 }
 
 # # Step 7: Cloud Function (Optional)
-# module "cloud_functioon" {
+# module "cloud_function" {
 #   source      = "../../modules/cloud-function"
 #   project_id  = var.project_id
 #   region      = var.region
