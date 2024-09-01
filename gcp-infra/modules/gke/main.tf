@@ -1,7 +1,8 @@
 # gke module: main.tf
 
-data "google_client_config" "default" {
-}
+# Remove this since it's already declared in the root module
+# data "google_client_config" "default" {
+# }
 
 # Google Provider Configuration
 provider "google" {
