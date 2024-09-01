@@ -4,11 +4,6 @@ provider "google" {
   region  = var.region
 }
 
-# Kubernetes Provider Configuration
-provider "kubernetes" {
-  config_path = "/home/runner/.kube/config"  # Ensure this is where kubectl config is stored after setup in CI/CD
-}
-
 # GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
@@ -133,30 +128,5 @@ resource "google_container_node_pool" "backend_pool" {
   }
 }
 
-# Kubernetes Service Accounts
-resource "kubernetes_service_account" "ksa" {
-  for_each = toset(var.namespaces)
 
-  metadata {
-    name      = "k8s-service-account"
-    namespace = each.value  # Create the service account in each namespace
-    annotations = {
-      "iam.gke.io/gcp-service-account" = var.gke_service_account_email
-    }
-  }
-}
 
-# IAM Binding for Workload Identity
-resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
-  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.gke_service_account_email}"
-  role               = "roles/iam.workloadIdentityUser"
-
-  members = [
-    "serviceAccount:${var.project_id}.svc.id.goog[frontend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[backend/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[external-dns/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[ingress/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
-    "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
-  ]
-}

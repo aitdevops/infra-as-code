@@ -68,23 +68,38 @@ jobs:
         run: terraform plan -var-file=terraform.tfvars -no-color
         continue-on-error: true
 
-      - name: Install GKE gcloud Auth Plugin
-        run: |
-          sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
-          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+      - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = 
+            #### Terraform Initialization ⚙️ \${{ steps.init.outcome }}\
+            #### Terraform Validation 🤖 \${{ steps.validate.outcome }}\
+            #### Terraform Plan 📖 \${{ steps.plan.outcome }}\
+            
+            <details><summary>Show Plan</summary>
+            
+            \\\
+            ${process.env.PLAN}
+            \\\
+            
+            </details>
+            
+            *Pushed by: @${{ github.actor }}, Action: \${{ github.event_name }}\*;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
 
-      - name: Configure kubectl
-        run: |
-          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --zone ${{ secrets.CLUSTER_ZONE }} --project ${{ secrets.PROJECT_ID }}
-          mkdir -p /home/runner/.kube
-          # No need to copy the kubeconfig since it's already in the correct location
-          # Just ensure it exists and is being used correctly
-          ls -la /home/runner/.kube/config
-
-      - name: Apply Kubernetes Service Accounts
-        working-directory: gcp-infra/environments/prod
-        run: terraform apply -target=kubernetes_service_account.ksa -var-file=terraform.tfvars -auto-approve -input=false
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
