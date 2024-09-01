@@ -4,6 +4,9 @@ provider "google" {
   region  = var.region
 }
 
+# Data source to fetch Google Cloud client configuration
+data "google_client_config" "default" {}
+
 # GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
