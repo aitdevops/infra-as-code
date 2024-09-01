@@ -1,9 +1,5 @@
 # gke module: main.tf
 
-# Remove this since it's already declared in the root module
-# data "google_client_config" "default" {
-# }
-
 # Google Provider Configuration
 provider "google" {
   project = var.project_id
