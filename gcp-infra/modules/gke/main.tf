@@ -4,12 +4,6 @@ provider "google" {
   region  = var.region
 }
 
-# Kubernetes Provider Configuration
-provider "kubernetes" {
-  config_path = "${path.module}/kubeconfig"  # Use the correct path set in the workflow
-}
-
-
 # GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
@@ -134,6 +128,34 @@ resource "google_container_node_pool" "backend_pool" {
   }
 }
 
+# Wait for GKE Cluster to be Ready
+resource "null_resource" "wait_for_cluster" {
+  provisioner "local-exec" {
+    command = <<EOT
+      for i in {1..30}; do
+        kubectl get nodes --kubeconfig=${path.module}/kubeconfig && break
+        echo "Waiting for GKE cluster to be ready..."
+        sleep 10
+      done
+    EOT
+
+    environment = {
+      KUBECONFIG = "${path.module}/kubeconfig"
+    }
+  }
+
+  depends_on = [google_container_cluster.primary]
+}
+
+# Kubernetes Provider Configuration
+provider "kubernetes" {
+  host                   = google_container_cluster.primary.endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+  load_config_file       = false
+  depends_on             = [null_resource.wait_for_cluster]
+}
+
 # IAM Binding for Workload Identity
 resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
   service_account_id = var.gke_service_account_name
@@ -160,4 +182,6 @@ resource "kubernetes_service_account" "ksa" {
       "iam.gke.io/gcp-service-account" = var.gke_service_account_email
     }
   }
+
+  depends_on = [null_resource.wait_for_cluster]
 }
