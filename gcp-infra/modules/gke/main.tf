@@ -4,6 +4,19 @@ provider "google" {
   region  = var.region
 }
 
+# Data source to get the GKE cluster information
+data "google_container_cluster" "primary" {
+  name     = google_container_cluster.primary.name
+  location = var.region
+}
+
+# Kubernetes Provider Configuration using the data source
+provider "kubernetes" {
+  host                   = data.google_container_cluster.primary.endpoint
+  token                  = data.google_container_cluster.primary.access_token
+  cluster_ca_certificate = base64decode(data.google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+}
+
 # GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
@@ -141,13 +154,6 @@ resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
     "serviceAccount:${var.project_id}.svc.id.goog[argo/k8s-service-account]",
     "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/k8s-service-account]",
   ]
-}
-
-# Kubernetes Provider Configuration
-provider "kubernetes" {
-  host                   = data.google_container_cluster.primary.endpoint
-  token                  = data.google_container_cluster.primary.access_token
-  cluster_ca_certificate = base64decode(data.google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
 }
 
 # Kubernetes Service Accounts
