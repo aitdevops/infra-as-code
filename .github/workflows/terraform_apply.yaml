@@ -110,9 +110,10 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --zone ${{ secrets.CLUSTER_ZONE }} --project ${{ secrets.PROJECT_ID }}
+          mkdir -p ~/.kube
+          cp ~/.kube/config /home/runner/.kube/config
 
       - name: Apply Kubernetes Service Accounts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: gcp-infra/environments/prod
-        run: |
-          terraform apply -target=kubernetes_service_account.ksa -var-file=terraform.tfvars -auto-approve -input=false
+        run: terraform apply -target=kubernetes_service_account.ksa -var-file=terraform.tfvars -auto-approve -input=false

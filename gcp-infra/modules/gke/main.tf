@@ -6,7 +6,7 @@ provider "google" {
 
 # Kubernetes Provider Configuration
 provider "kubernetes" {
-  config_path = "~/.kube/config"  # Use your local kubeconfig file, or configure dynamically in CI/CD
+  config_path = "/home/runner/.kube/config"  # Ensure this is where kubectl config is stored after setup in CI/CD
 }
 
 # GKE Cluster Configuration
@@ -148,7 +148,7 @@ resource "kubernetes_service_account" "ksa" {
 
 # IAM Binding for Workload Identity
 resource "google_service_account_iam_binding" "gke_workload_identity_binding" {
-  service_account_id = var.gke_service_account_name
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.gke_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
 
   members = [
