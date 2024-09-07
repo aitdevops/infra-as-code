@@ -27,7 +27,7 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         # Change directory to the correct folder where your .tf files are located
     - name: 'Change Directory to environments/prod'
-      run: cd environments/prod
+      run: cd azure-infra/environments/prod
 
     - name: 'Terraform Init'
       run: terraform init
