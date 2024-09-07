@@ -8,17 +8,17 @@ variable "location" {
   description = "Azure region where the resource group will be created."
   type        = string
 }
-variable "subscription_id" {
+variable "azure_subscription_id" {
   type        = string
-  description = "Azure subscription ID"
+  description = "Azure Subscription ID used for Terraform"
 }
 
-variable "tenant_id" {
+variable "azure_tenant_id" {
   type        = string
-  description = "Azure tenant ID"
+  description = "Azure Tenant ID used for Terraform"
 }
 
-variable "client_id" {
+variable "azure_client_id" {
   type        = string
-  description = "Azure client ID"
+  description = "Azure Client ID used for Terraform"
 }
