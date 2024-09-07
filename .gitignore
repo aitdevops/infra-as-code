@@ -15,4 +15,6 @@ terraform.tfvars
 sa_wif_setup.sh
 terraform.tfvars.gpg
 terraform.tfvars.gpg.b64
-
+azure.tfvars
+azure.tfvars.gpg
+azure.tfvars.gpg.b64

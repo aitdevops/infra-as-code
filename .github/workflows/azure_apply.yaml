@@ -1,47 +1,71 @@
-name: 'Terraform Deploy using OIDC'
+name: 'Terraform Deploy using OIDC and Decrypted Vars'
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+    paths:
+      - 'azure-infra/environments/prod/**'
+      - '.github/workflows/azure_apply.yaml'
+  workflow_dispatch:
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read   # Default permissions for actions/checkout
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # Required for OIDC
-      contents: read   # Default permissions for actions/checkout
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Login to Azure using OIDC
-      uses: azure/login@v1
-      with:
-        client-id: d385aa71-0f89-4204-964c-2cbb4322fcc0  # Hardcoded client ID
-        tenant-id: 4c470cc0-914e-41d8-b3f2-2812cb01d186  # Hardcoded tenant ID
-        subscription-id: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c  # Hardcoded subscription ID
+      - name: Decrypt terraform.tfvars.gpg.b64
+        env:
+          AZURE_TFVARS_ENCRYPTED: ${{ secrets.AZURE_TFVARS_ENCRYPTED }}
+          GPG_PASSPHRASE_AZURE: ${{ secrets.AZURE_GPG_PASSPHRASE }}
+        run: |
+          echo "${AZURE_TFVARS_ENCRYPTED}" | base64 --decode > azure-infra/environments/prod/azure.tfvars.gpg
+          gpg --batch --yes --passphrase="${AZURE_GPG_PASSPHRASE}" --output azure-infra/environments/prod/azure.tfvars --decrypt azure-infra/environments/prod/azure.tfvars.gpg
+          rm azure-infra/environments/prod/azure.tfvars.gpg
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
+      - name: Set permissions on terraform.tfvars
+        run: chmod 644 azure-infra/environments/prod/azure.tfvars
 
-    - name: Terraform Init
-      working-directory: ./azure-infra
-      run: terraform init
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}  # Securely managed through GitHub Secrets
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Terraform Plan
-      working-directory: ./azure-infra
-      env:
-        TF_VAR_azure_client_id: d385aa71-0f89-4204-964c-2cbb4322fcc0  # Hardcoded client ID
-        TF_VAR_azure_tenant_id: 4c470cc0-914e-41d8-b3f2-2812cb01d186  # Hardcoded tenant ID
-        TF_VAR_azure_subscription_id: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c  # Hardcoded subscription ID
-      run: terraform plan
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
 
-    - name: Terraform Apply
-      working-directory: ./azure-infra
-      env:
-        TF_VAR_azure_client_id: d385aa71-0f89-4204-964c-2cbb4322fcc0  # Hardcoded client ID
-        TF_VAR_azure_tenant_id: 4c470cc0-914e-41d8-b3f2-2812cb01d186  # Hardcoded tenant ID
-        TF_VAR_azure_subscription_id: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c  # Hardcoded subscription ID
-      run: terraform apply -auto-approve
+      - name: Terraform Init
+        working-directory: azure-infra/environments/prod
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        working-directory: azure-infra/environments/prod
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        working-directory: azure-infra/environments/prod
+        env:
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Use secrets for client ID
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Use secrets for tenant ID
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Use secrets for subscription ID
+        run: terraform plan -var-file=azure.tfvars -no-color
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: azure-infra/environments/prod
+        env:
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Use secrets for client ID
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Use secrets for tenant ID
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Use secrets for subscription ID
+        run: terraform apply -var-file=azure.tfvars -auto-approve -input=false
