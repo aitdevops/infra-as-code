@@ -1,10 +1,14 @@
 provider "azurerm" {
   features {}
 
-  # Ensure that the provider uses the environment variables provided by OIDC login
+  # Use OIDC authentication instead of Azure CLI
   use_oidc = true
-}
 
+  # Optional, but you can also reference the environment variables explicitly
+  subscription_id = var.azure_subscription_id
+  tenant_id       = var.azure_tenant_id
+  client_id       = var.azure_client_id
+}
 
 # Define resource group (if creating new resources)
 resource "azurerm_resource_group" "rg" {

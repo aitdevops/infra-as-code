@@ -1,16 +1,14 @@
-variable "location" {
-  description = "Location for all resources"
-  default     = "East US"
+variable "azure_subscription_id" {
+  type        = string
+  description = "Azure Subscription ID"
 }
 
-variable "resource_group_name" {
-  description = "Resource Group Name"
-  default     = "aitdevops"
+variable "azure_tenant_id" {
+  type        = string
+  description = "Azure Tenant ID"
 }
 
-variable "vnet_name" {
-  description = "Virtual Network Name"
-  default     = "example-vnet"
+variable "azure_client_id" {
+  type        = string
+  description = "Azure Client ID"
 }
-
-# Add more variables as per your requirement

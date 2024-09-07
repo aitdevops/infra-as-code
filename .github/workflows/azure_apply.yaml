@@ -9,8 +9,8 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: read
+      id-token: write  # Required for OIDC
+      contents: read   # Default permissions for actions/checkout
 
     steps:
     - name: Checkout code
@@ -28,12 +28,24 @@ jobs:
 
     - name: Terraform Init
       working-directory: ./azure-infra
+      env:
+        ARM_CLIENT_ID: d385aa71-0f89-4204-964c-2cbb4322fcc0  # Use your Application (client) ID
+        ARM_SUBSCRIPTION_ID: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c  # Use your Subscription ID
+        ARM_TENANT_ID: 4c470cc0-914e-41d8-b3f2-2812cb01d186  # Use your Tenant ID
       run: terraform init
 
     - name: Terraform Plan
       working-directory: ./azure-infra
+      env:
+        ARM_CLIENT_ID: d385aa71-0f89-4204-964c-2cbb4322fcc0
+        ARM_SUBSCRIPTION_ID: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c
+        ARM_TENANT_ID: 4c470cc0-914e-41d8-b3f2-2812cb01d186
       run: terraform plan
 
     - name: Terraform Apply
       working-directory: ./azure-infra
+      env:
+        ARM_CLIENT_ID: d385aa71-0f89-4204-964c-2cbb4322fcc0
+        ARM_SUBSCRIPTION_ID: 6e5394a9-f79c-4c60-9252-45d6d4a0f88c
+        ARM_TENANT_ID: 4c470cc0-914e-41d8-b3f2-2812cb01d186
       run: terraform apply -auto-approve
