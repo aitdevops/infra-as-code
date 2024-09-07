@@ -3,7 +3,7 @@ terraform {
   backend "azurerm" {
     resource_group_name   = "aitdevops"  # Hardcoded resource group name for backend storage
     storage_account_name  = "terraformstateaitdevops"  # Hardcoded storage account name
-    container_name        = "terraformstateaitdevops"  # Hardcoded container name for the state file
+    container_name        = "terraformstate"  # Hardcoded container name for the state file
     key                   = "terraform.tfstate"  # Name of the state file
 
 
