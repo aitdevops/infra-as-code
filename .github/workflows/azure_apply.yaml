@@ -25,12 +25,17 @@ jobs:
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.3.0  # Specify the desired Terraform version
 
     - name: Terraform Init
+      working-directory: ./azure-infra    # Pointing to the correct folder
       run: terraform init
 
     - name: Terraform Plan
+      working-directory: ./azure-infra    # Pointing to the correct folder
       run: terraform plan
 
     - name: Terraform Apply
+      working-directory: ./azure-infra    # Pointing to the correct folder
       run: terraform apply -auto-approve
