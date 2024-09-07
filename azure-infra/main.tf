@@ -6,10 +6,12 @@ terraform {
     container_name        = "terraformstateaitdevops"  # Hardcoded container name for the state file
     key                   = "terraform.tfstate"  # Name of the state file
 
+
     # OIDC related values (hardcoded for backend)
     subscription_id       = "6e5394a9-f79c-4c60-9252-45d6d4a0f88c"  # Hardcoded subscription ID for backend
     tenant_id             = "4c470cc0-914e-41d8-b3f2-2812cb01d186"  # Hardcoded tenant ID for backend
     client_id             = "d385aa71-0f89-4204-964c-2cbb4322fcc0"  # Hardcoded client ID for backend
+    use_oidc              = true  # Enable OIDC
   }
 }
 
