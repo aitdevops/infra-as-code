@@ -128,4 +128,3 @@ variable "redis_ip" {
   description = "The IP address to set in the redisrecord"
   type        = string
 }
-
