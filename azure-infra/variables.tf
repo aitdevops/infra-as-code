@@ -1,15 +1,18 @@
+# Variable for Azure Subscription ID
 variable "azure_subscription_id" {
-  description = "Azure Subscription ID"
+  description = "Azure Subscription ID where resources will be created."
   type        = string
 }
 
+# Variable for Azure Tenant ID
 variable "azure_tenant_id" {
-  description = "Azure Tenant ID"
+  description = "Azure Tenant ID for authentication."
   type        = string
 }
 
+# Variable for Azure Client ID
 variable "azure_client_id" {
-  description = "Azure Client ID"
+  description = "Azure Client ID for OIDC authentication."
   type        = string
 }
 

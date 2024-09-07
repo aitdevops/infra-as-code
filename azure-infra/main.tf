@@ -1,19 +1,36 @@
-# Provider block: This configures the Azure provider to authenticate using OIDC.
-provider "azurerm" {
-  features {}
-  use_oidc        = true
-  subscription_id = var.azure_subscription_id
-  tenant_id       = var.azure_tenant_id
-  client_id       = var.azure_client_id
+# Backend configuration (hardcoded with tenant_id, client_id, and subscription_id)
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "aitdevops"  # Hardcoded resource group name for backend storage
+    storage_account_name  = "terraformstateaitdevops"  # Hardcoded storage account name
+    container_name        = "terraformstateaitdevops"  # Hardcoded container name for the state file
+    key                   = "terraform.tfstate"  # Name of the state file
+
+    # OIDC related values for backend
+    subscription_id       = var.azure_subscription_id  # Azure Subscription ID for backend
+    tenant_id             = var.azure_tenant_id  # Azure Tenant ID for backend
+    client_id             = var.azure_client_id  # Azure Client ID for backend
+  }
 }
 
-# Resource Group block: Creates a resource group
+# Azure Provider block
+provider "azurerm" {
+  features {}
+
+  # OIDC related values for provider
+  use_oidc        = true
+  subscription_id = var.azure_subscription_id  # Azure Subscription ID for provider
+  tenant_id       = var.azure_tenant_id  # Azure Tenant ID for provider
+  client_id       = var.azure_client_id  # Azure Client ID for provider
+}
+
+# Resource Group block (dynamic)
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
 
-# Storage Account block: Creates a storage account
+# Storage Account block (dynamic)
 resource "azurerm_storage_account" "sa" {
   name                     = var.storage_account_name
   resource_group_name       = azurerm_resource_group.rg.name
@@ -22,21 +39,9 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type  = "LRS"
 }
 
-# Storage Container block: Creates a container for the state file
+# Storage Container block (dynamic)
 resource "azurerm_storage_container" "state_container" {
   name                  = var.container_name
   storage_account_name  = azurerm_storage_account.sa.name
   container_access_type = "private"
 }
-
-
-# Backend configuration: Configures the Terraform state to be stored in the newly created storage account and container.
-terraform {
-  backend "azurerm" {
-    resource_group_name   = var.backend_resource_group_name  # Use variable for resource group name
-    storage_account_name  = var.backend_storage_account_name  # Use variable for storage account name
-    container_name        = var.backend_container_name  # Use variable for container name
-    key                   = "terraform.tfstate"  # State file name
-  }
-}
-
