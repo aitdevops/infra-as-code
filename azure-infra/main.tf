@@ -14,7 +14,7 @@ terraform {
   }
 }
 
-# AzureRM Provider configuration using OIDC for authentication
+# AzureRM Provider configuration using OIDC or authentication
 provider "azurerm" {
   features {}
 
