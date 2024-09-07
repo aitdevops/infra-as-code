@@ -10,7 +10,7 @@ backend_container_name       = "terraformstateaitdevops"
 # Resource creation values (can be the same or different from the backend)
 resource_group_name = "aitdevops"
 storage_account_name = "terraformstateaitdevops"
-container_name = "terraformstateaitdevops"
+container_name = "terraformstate"
 
 
 resource_group_name   = "aitdevops"
