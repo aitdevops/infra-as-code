@@ -8,5 +8,5 @@ storage_account_name = "terraformstateaitdevops"
 container_name = "test"
 
 
-resource_group_name   = "ait"
+resourc_group_name   = "ait"
 location              = "East US"

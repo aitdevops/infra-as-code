@@ -27,6 +27,6 @@ provider "azurerm" {
 
 # Azure Resource Group creation
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name  # The name of the resource group
+  name     = var.resourc_group_name  # The name of the resource group
   location = var.location  # The Azure region where the resource group will be created
 }

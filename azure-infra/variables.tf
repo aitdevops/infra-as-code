@@ -29,3 +29,8 @@ variable "location" {
   type        = string
   default     = "East US"  # You can replace this with your preferred Azure region.
 }
+variable "resourc_group_name" {
+  description = "The name of the resource group to create."
+  type        = string
+  default     = "ait"  # You can replace this with the desired name.
+}
