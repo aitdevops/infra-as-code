@@ -6,6 +6,7 @@ on:
     paths:
       - 'azure-infra/environments/prod/**'
       - '.github/workflows/azure_apply.yaml'
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -25,15 +26,18 @@ jobs:
         client-id: d385aa71-0f89-4204-964c-2cbb4322fcc0
         tenant-id: 4c470cc0-914e-41d8-b3f2-2812cb01d186
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        # Change directory to the correct folder where your .tf files are located
-    - name: 'Change Directory to environments/prod'
-      run: cd azure-infra/environments/prod
 
+    # Run Terraform Init from the correct directory
     - name: 'Terraform Init'
       run: terraform init
+      working-directory: azure-infra/environments/prod
 
+    # Run Terraform Plan from the correct directory
     - name: 'Terraform Plan'
       run: terraform plan
+      working-directory: azure-infra/environments/prod
 
+    # Run Terraform Apply from the correct directory
     - name: 'Terraform Apply'
       run: terraform apply -auto-approve
+      working-directory: azure-infra/environments/prod
