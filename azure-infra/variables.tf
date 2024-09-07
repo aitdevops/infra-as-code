@@ -1,45 +1,55 @@
-# Variable for Azure Subscription ID
 variable "azure_subscription_id" {
-  description = "Azure Subscription ID where resources will be created."
+  description = "Azure Subscription ID"
   type        = string
 }
 
-# Variable for Azure Tenant ID
 variable "azure_tenant_id" {
-  description = "Azure Tenant ID for authentication."
+  description = "Azure Tenant ID"
   type        = string
 }
 
-# Variable for Azure Client ID
 variable "azure_client_id" {
-  description = "Azure Client ID for OIDC authentication."
+  description = "Azure Client ID"
   type        = string
 }
 
-# Variable for Resource Group name
+# Variables for backend configuration
+variable "backend_resource_group_name" {
+  description = "Name of the resource group where the backend state is stored"
+  type        = string
+}
+
+variable "backend_storage_account_name" {
+  description = "Name of the storage account where the backend state is stored"
+  type        = string
+}
+
+variable "backend_container_name" {
+  description = "Name of the container where the backend state is stored"
+  type        = string
+}
+
+# Variables for creating resources
 variable "resource_group_name" {
-  description = "The name of the resource group to create and hold the storage account."
+  description = "Name of the resource group to create"
   type        = string
-  default     = "aitdevops"  # You can customize this.
+  default     = "aitdevops"
 }
 
-# Variable for the Azure region (location)
 variable "location" {
-  description = "Azure region where the resources will be deployed."
+  description = "Azure region"
   type        = string
-  default     = "East US"  # You can change this to the desired Azure region.
+  default     = "East US"
 }
 
-# Variable for the Storage Account name
 variable "storage_account_name" {
-  description = "The name of the storage account to store Terraform state."
+  description = "Name of the storage account to create"
   type        = string
-  default     = "terraformstateaitdevops"  # Storage account name.
+  default     = "terraformstateaitdevops"
 }
 
-# Variable for the Blob Container name
 variable "container_name" {
-  description = "The name of the blob container to store the Terraform state file."
+  description = "Name of the container to create"
   type        = string
-  default     = "terraformstateaitdevops"  # Container name for state file storage.
+  default     = "terraformstateaitdevops"
 }
