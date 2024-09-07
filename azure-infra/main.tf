@@ -1,5 +1,8 @@
 provider "azurerm" {
   features {}
+
+  # Ensure that the provider uses the environment variables provided by OIDC login
+  use_oidc = true
 }
 
 
