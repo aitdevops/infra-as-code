@@ -3,7 +3,7 @@ terraform {
   backend "azurerm" {
     resource_group_name   = "aitdevops"  # Name of the resource group for backend storage
     storage_account_name  = "terraformstateaitdevops"  # Storage account name for backend
-    container_name        = "test"  # Updated container name to "test"
+    container_name        = "aitdevops"  # Updated container name to "test"
     key                   = "terraform.tfstate"  # The name of the state file in Azure Blob Storage
 
     # OIDC-related values for backend authentication
