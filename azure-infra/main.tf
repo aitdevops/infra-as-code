@@ -1,11 +1,11 @@
 # Backend configuration (hardcoded)
+# Backend configuration (hardcoded)
 terraform {
   backend "azurerm" {
     resource_group_name   = "aitdevops"  # Hardcoded resource group name for backend storage
     storage_account_name  = "terraformstateaitdevops"  # Hardcoded storage account name
-    container_name        = "terraform"  # Hardcoded container name for the state file
+    container_name        = "test"  # Updated container name to "test"
     key                   = "terraform.tfstate"  # Name of the state file
-
 
     # OIDC related values (hardcoded for backend)
     subscription_id       = "6e5394a9-f79c-4c60-9252-45d6d4a0f88c"  # Hardcoded subscription ID for backend
@@ -14,6 +14,7 @@ terraform {
     use_oidc              = true  # Enable OIDC
   }
 }
+
 
 # Azure Provider block (variables can still be used here)
 provider "azurerm" {
