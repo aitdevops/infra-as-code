@@ -2,15 +2,6 @@ provider "azurerm" {
   features {}
 }
 
-# Configure the Azure backend for state storage
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "aitdevops"
-    storage_account_name  = "terraformstateaitdevops"
-    container_name        = "terraformstateaitdevops"
-    key                   = "terraform.tfstate"
-  }
-}
 
 # Define resource group (if creating new resources)
 resource "azurerm_resource_group" "rg" {
