@@ -1,30 +1,9 @@
-name: 'Terraform Deploy using OIDC and Key Vault Secrets aitdevops'
-
-on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'azure-infra/environments/prod/**'
-      - '.github/workflows/azure_apply.yaml'
-  workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install Azure CLI (if not installed)
-        run: |
-          if ! command -v az &> /dev/null
-          then
-            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          fi
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
@@ -48,25 +27,8 @@ jobs:
 
       - name: Terraform Init
         working-directory: azure-infra/environments/prod
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
         run: terraform init -input=false
-
-      - name: Terraform Validate
-        working-directory: azure-infra/environments/prod
-        run: terraform validate -no-color
-
-      - name: Terraform Plan
-        working-directory: azure-infra/environments/prod
-        env:
-          TF_VAR_azure_subscription_id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_azure_tenant_id: ${{ env.AZURE_TENANT_ID }}
-          TF_VAR_azure_client_id: ${{ env.AZURE_CLIENT_ID }}
-        run: terraform plan -var-file=azure.tfvars -no-color
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: azure-infra/environments/prod
-        env:
-          TF_VAR_azure_subscription_id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_azure_tenant_id: ${{ env.AZURE_TENANT_ID }}
-          TF_VAR_azure_client_id: ${{ env.AZURE_CLIENT_ID }}
-        run: terraform apply -var-file=azure.tfvars -auto-approve -input=false
