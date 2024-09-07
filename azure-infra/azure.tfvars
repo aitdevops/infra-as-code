@@ -11,3 +11,7 @@ backend_container_name       = "terraformstateaitdevops"
 resource_group_name = "aitdevops"
 storage_account_name = "terraformstateaitdevops"
 container_name = "terraformstateaitdevops"
+
+
+resource_group_name   = "aitdevops"
+location              = "East US"
