@@ -1,4 +1,4 @@
-name: 'Terraform Deploy using OIDC and Key Vault Secrets aitdevops'
+name: 'Terraform Deploy using OIDC and GitHub Secrets'
 
 on:
   push:
@@ -19,13 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Azure CLI (if not installed)
-        run: |
-          if ! command -v az &> /dev/null
-          then
-            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          fi
-
       - name: Login to Azure using OIDC
         uses: azure/login@v1
         with:
@@ -36,18 +29,12 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Retrieve secrets from Azure Key Vault
-        run: |
-          AZURE_SUBSCRIPTION_ID=$(az keyvault secret show --vault-name aitdevops-vault --name azure-subscription-id --query value -o tsv)
-          AZURE_TENANT_ID=$(az keyvault secret show --vault-name aitdevops-vault --name azure-tenant-id --query value -o tsv)
-          AZURE_CLIENT_ID=$(az keyvault secret show --vault-name aitdevops-vault --name azure-client-id --query value -o tsv)
-
-          echo "AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" >> $GITHUB_ENV
-          echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
-          echo "AZURE_CLIENT_ID=${AZURE_CLIENT_ID}" >> $GITHUB_ENV
-
       - name: Terraform Init
         working-directory: azure-infra/environments/prod
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Set from GitHub Secrets
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}  # Set from GitHub Secrets
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}  # Set from GitHub Secrets
         run: terraform init -input=false
 
       - name: Terraform Validate
@@ -57,16 +44,16 @@ jobs:
       - name: Terraform Plan
         working-directory: azure-infra/environments/prod
         env:
-          TF_VAR_azure_subscription_id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_azure_tenant_id: ${{ env.AZURE_TENANT_ID }}
-          TF_VAR_azure_client_id: ${{ env.AZURE_CLIENT_ID }}
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Directly use GitHub Secrets
         run: terraform plan -var-file=azure.tfvars -no-color
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: azure-infra/environments/prod
         env:
-          TF_VAR_azure_subscription_id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_azure_tenant_id: ${{ env.AZURE_TENANT_ID }}
-          TF_VAR_azure_client_id: ${{ env.AZURE_CLIENT_ID }}
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Directly use GitHub Secrets
         run: terraform apply -var-file=azure.tfvars -auto-approve -input=false
