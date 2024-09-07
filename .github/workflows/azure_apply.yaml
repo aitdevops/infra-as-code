@@ -1,4 +1,4 @@
-name: 'Terraform Deploy using OIDC and GitHub Secrets'
+name: 'Terraform Deploy using GitHub Secrets'
 
 on:
   push:
@@ -32,9 +32,9 @@ jobs:
       - name: Terraform Init
         working-directory: azure-infra/environments/prod
         env:
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Set from GitHub Secrets
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}  # Set from GitHub Secrets
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}  # Set from GitHub Secrets
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Use GitHub Secrets to set subscription ID
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Use GitHub Secrets to set tenant ID
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Use GitHub Secrets to set client ID
         run: terraform init -input=false
 
       - name: Terraform Validate
@@ -44,16 +44,16 @@ jobs:
       - name: Terraform Plan
         working-directory: azure-infra/environments/prod
         env:
-          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Directly use GitHub Secrets
-          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Directly use GitHub Secrets
-          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Use GitHub Secrets to set subscription ID
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Use GitHub Secrets to set tenant ID
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Use GitHub Secrets to set client ID
         run: terraform plan -var-file=azure.tfvars -no-color
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: azure-infra/environments/prod
         env:
-          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Directly use GitHub Secrets
-          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Directly use GitHub Secrets
-          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Directly use GitHub Secrets
+          TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Use GitHub Secrets to set subscription ID
+          TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}  # Use GitHub Secrets to set tenant ID
+          TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}  # Use GitHub Secrets to set client ID
         run: terraform apply -var-file=azure.tfvars -auto-approve -input=false
