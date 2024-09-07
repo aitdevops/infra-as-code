@@ -1,7 +1,8 @@
 provider "azurerm" {
   features {}
-  use_oidc = true
+  use_oidc = true  # Ensure OIDC is enabled for the AzureRM provider
 }
+
 
 # Define resource group
 resource "azurerm_resource_group" "rg" {
