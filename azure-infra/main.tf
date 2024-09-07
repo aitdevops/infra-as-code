@@ -1,7 +1,10 @@
 provider "azurerm" {
   features {}
-  use_oidc = true  # Ensure OIDC is enabled for the AzureRM provider
+  tenant_id  = "4c470cc0-914e-41d8-b3f2-2812cb01d186"  # Tenant ID
+  client_id  = "d385aa71-0f89-4204-964c-2cbb4322fcc0"  # Client ID
+  use_oidc   = true
 }
+
 
 
 # Define resource group

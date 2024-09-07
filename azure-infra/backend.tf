@@ -4,8 +4,10 @@ terraform {
     storage_account_name  = "terraformstateaitdevops"
     container_name        = "terraformstateaitdevops"
     key                   = "terraform.tfstate"
-
-    # Add these to enable OIDC authentication for the backend
-    use_oidc = true  # Enable OIDC
+    
+    # Required for OIDC authentication
+    tenant_id             = "4c470cc0-914e-41d8-b3f2-2812cb01d186"  # Your tenant ID
+    client_id             = "d385aa71-0f89-4204-964c-2cbb4322fcc0"  # Your client ID
+    use_oidc              = true  # Enable OIDC
   }
 }
