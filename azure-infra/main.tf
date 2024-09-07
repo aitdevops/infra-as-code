@@ -1,22 +1,24 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "aitdevops"
+    storage_account_name  = "terraformstateaitdevops"
+    container_name        = "terraformstateaitdevops"
+    key                   = "terraform.tfstate"
+  }
+}
+
 provider "azurerm" {
   features {}
-
-  # Use OIDC authentication instead of Azure CLI
   use_oidc = true
-
-  # Optional, but you can also reference the environment variables explicitly
-  subscription_id = var.azure_subscription_id
-  tenant_id       = var.azure_tenant_id
-  client_id       = var.azure_client_id
 }
 
-# Define resource group (if creating new resources)
+# Define resource group
 resource "azurerm_resource_group" "rg" {
   name     = "aitdevops"
-  location = "East US"  # Adjust based on your region
+  location = "East US"
 }
 
-# Example: Creating a virtual network (you can adjust resources as per your needs)
+# Example: Creating a virtual network
 resource "azurerm_virtual_network" "example_vnet" {
   name                = "example-vnet"
   address_space       = ["10.0.0.0/16"]
@@ -24,4 +26,11 @@ resource "azurerm_virtual_network" "example_vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Add other resources as needed here
+# Output for resource group and virtual network
+output "resource_group_name" {
+  value = azurerm_resource_group.rg.name
+}
+
+output "vnet_id" {
+  value = azurerm_virtual_network.example_vnet.id
+}
