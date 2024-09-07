@@ -19,17 +19,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Decrypt azure.tfvars.gpg.b64
-      #   env:
-      #     AZURE_TFVARS_ENCRYPTED: ${{ secrets.AZURE_TFVARS_ENCRYPTED }}
-      #     GPG_PASSPHRASE_AZURE: ${{ secrets.AZURE_GPG_PASSPHRASE }}
-      #   run: |
-      #     echo "${AZURE_TFVARS_ENCRYPTED}" | base64 --decode > azure-infra/environments/prod/azure.tfvars.gpg
-      #     gpg --batch --yes --passphrase="${AZURE_GPG_PASSPHRASE}" --output azure-infra/environments/prod/azure.tfvars --decrypt azure-infra/environments/prod/azure.tfvars.gpg
-      #     rm azure-infra/environments/prod/azure.tfvars.gpg
+      - name: Decrypt azure.tfvars.gpg.b64
+        env:
+          AZURE_TFVARS_ENCRYPTED: ${{ secrets.AZURE_TFVARS_ENCRYPTED }}
+          GPG_PASSPHRASE_AZURE: ${{ secrets.AZURE_GPG_PASSPHRASE }}
+        run: |
+          echo "${AZURE_TFVARS_ENCRYPTED}" | base64 --decode > azure-infra/environments/prod/azure.tfvars.gpg
+          gpg --batch --yes --passphrase="${AZURE_GPG_PASSPHRASE}" --output azure-infra/environments/prod/azure.tfvars --decrypt azure-infra/environments/prod/azure.tfvars.gpg
+          rm azure-infra/environments/prod/azure.tfvars.gpg
 
-      # - name: Set permissions on terraform.tfvars
-      #   run: chmod 644 azure-infra/environments/prod/azure.tfvars
+      - name: Set permissions on terraform.tfvars
+        run: chmod 644 azure-infra/environments/prod/azure.tfvars
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
