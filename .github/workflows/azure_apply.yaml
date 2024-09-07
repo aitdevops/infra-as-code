@@ -33,7 +33,7 @@ jobs:
           gpg --batch --yes --passphrase="${AZURE_GPG_PASSPHRASE}" --output azure-infra/environments/prod/azure.tfvars --decrypt azure-infra/environments/prod/azure.tfvars.gpg
           rm azure-infra/environments/prod/azure.tfvars.gpg
 
-      - name: Set permissions on terraform.tfvars
+      - name: Set permissions on azure.tfvars
         run: chmod 644 azure-infra/environments/prod/azure.tfvars
 
       - name: Login to Azure using OIDC
