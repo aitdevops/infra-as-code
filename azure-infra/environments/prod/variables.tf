@@ -36,18 +36,15 @@ variable "backend_container_name" {
 variable "backend_key" {
   description = "Name of the state file."
   type        = string
-  default     = "prod.tfstate"
 }
 
 # Resource group details
-variable "resource_group_name" {
+variable "rg_group_name" {
   description = "The name of the resource group to create."
   type        = string
-  default     = "ait-prod"
 }
 
 variable "location" {
   description = "Azure region where the resource group will be created."
   type        = string
-  default     = "East US"
 }
