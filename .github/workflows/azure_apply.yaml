@@ -1,4 +1,4 @@
-name: 'Terraform Deploy using OIDC and Key Vault Secrets'
+name: 'Terraform Deploy using OIDC and Key Vault Secrets aitdevops'
 
 on:
   push:
