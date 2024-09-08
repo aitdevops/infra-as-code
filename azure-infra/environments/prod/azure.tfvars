@@ -2,7 +2,7 @@
 rg_group_name = "test"
 location      = "East US"
 
-# vnet variables
+# vnet variables.
 vnet_name = "aitdevops-vnet"
 resource_group_name = "aitdevops"
 private_subnet_name = "aitdevops-private-subnet"
