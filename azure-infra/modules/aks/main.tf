@@ -18,6 +18,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   resource_group_name = "aitdevops-rg" # Use existing resource group
   dns_prefix          = "${var.prefix}-aks"
 
+  network_profile {
+    service_cidr       = "10.1.0.0/16"  # Ensure this does not overlap with existing subnets
+    dns_service_ip     = "10.1.0.10"    # Must be within the service CIDR
+    load_balancer_sku  = "Standard"
+    outbound_type      = "loadBalancer"
+  }
+
   default_node_pool {
     name       = "default"
     node_count = var.node_count
