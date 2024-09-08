@@ -4,14 +4,15 @@ module "resource_group" {
   location            = var.location
 }
 module "network" {
-  source                  = "../../modules/network"
-  vnet_name               = var.vnet_name
-  address_space           = ["10.0.0.0/16"]
-  location                = var.location
-  resource_group_name     =  var.resource_group_name
-  tags                    = { "Environment" = "Production" }
-  private_subnet_name     = var.private_subnet_name
+  source              = "../../modules/network"
+  vnet_name           = "my-vnet"
+  address_space       = ["10.0.0.0/16"]
+  location            = "East US"
+  resource_group_name = "aitdevops"
+  tags                = { "Environment" = "Production" }
+  private_subnet_name = "my-private-subnet"
   private_subnet_address_prefixes = ["10.0.1.0/24"]
-  nat_gateway_name        = var.nat_gateway_name 
-  public_ip_address_ids    = [azurerm_public_ip.my_public_ip.id]  # Defin and create this resource in your configuration
+  nat_gateway_name    = "my-nat-gateway"
+  public_ip_address_id = azurerm_public_ip.nat_gateway_ip.id
 }
+
