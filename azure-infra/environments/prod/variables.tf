@@ -23,10 +23,7 @@ variable "azure_client_id" {
   description = "Azure Client ID used for Terraform"
 }
 # vnet variables
-variable "location" {
-  type        = string
-  description = "Azure location for the resources"
-}
+
 
 variable "prefix" {
   type        = string
