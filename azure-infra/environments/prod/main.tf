@@ -21,8 +21,10 @@ module "network" {
   private_subnet_name       = var.private_subnet_name 
   private_subnet_address_prefixes = var.private_subnet_address_prefixes
   nat_gateway_name          = var.nat_gateway_name
-  public_ip_address_id      = azurerm_public_ip.nat_gateway_ip.id
 }
 
-
+resource "azurerm_nat_gateway_public_ip_association" "nat_gateway_ip_association" {
+  nat_gateway_id       = module.network.nat_gateway_id
+  public_ip_address_id = module.network.public_ip_address_id
+}
 
