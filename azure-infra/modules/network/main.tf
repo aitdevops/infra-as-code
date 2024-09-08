@@ -17,8 +17,15 @@ resource "azurerm_nat_gateway" "nat_gateway" {
   name                = var.nat_gateway_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  sku                 = "Standard"
   tags                = var.tags
+}
+
+resource "azurerm_public_ip" "nat_gateway_ip" {
+  name                = "${var.nat_gateway_name}-ip"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "nat_gateway_ip_association" {
