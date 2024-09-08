@@ -38,7 +38,7 @@ variable "nat_gateway_name" {
   description = "The name of the NAT gateway."
 }
 
-variable "public_ip_address_ids" {
-  type        = list(string)
-  description = "The IDs of the public IP addresses associated with the NAT gateway"
+variable "public_ip_address_id" {
+  description = "The ID of the public IP address associated with the NAT gateway."
+  type        = string
 }
