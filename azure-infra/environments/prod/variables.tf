@@ -59,3 +59,7 @@ variable "nat_gateway_name" {
   type        = string
 }
 
+variable "public_ip_address_id" {
+  description = "The ID of the public IP address associated with the NAT gateway."
+  type        = string
+}
