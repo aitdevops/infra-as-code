@@ -36,3 +36,14 @@ variable "address_prefixes" {
   type        = list(string)
   description = "Address prefixes for the subnet"
 }
+variable "node_count" {
+  type        = number
+  description = "Number of nodes in the default node pool"
+  default     = 1
+}
+
+variable "vm_size" {
+  type        = string
+  description = "VM size for the default node pool"
+  default     = "Standard_DS2_v2"
+}
