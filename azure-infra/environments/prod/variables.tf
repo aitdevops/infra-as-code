@@ -27,10 +27,7 @@ variable "vnet_name" {
   description = "The name of the vnet to create."
   type        = string
 }
-variable "location" {
-  description = "The name of the location to create."
-  type        = string
-}
+
 variable "resource_group_name" {
   description = "The name of the resource_group to use."
   type        = string
