@@ -5,11 +5,11 @@ module "resource_group" {
 }
 module "vnet" {
   source              = "../../modules/vnet"
-  prefix              = "prod"
+  prefix              = var.prefix
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  address_space       = ["10.0.0.0/16"]
-  address_prefixes    = ["10.0.0.0/24"]
+  address_space       = var.address_space
+  address_prefixes    = var.address_prefixes
 }
 
 resource "azurerm_resource_group" "rg" {
