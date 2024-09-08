@@ -29,4 +29,12 @@ variable "prefix" {
   type        = string
   description = "Prefix for resource names"
 }
+variable "address_space" {
+  type        = list(string)
+  description = "Address space for the virtual network"
+}
 
+variable "address_prefixes" {
+  type        = list(string)
+  description = "Address prefixes for the subnet"
+}
