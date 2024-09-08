@@ -1,8 +1,3 @@
-# Resource variables
-variable "rg_group_name" {
-  description = "The name of the resource group to create."
-  type        = string
-}
 # provider variables
 variable "location" {
   description = "Azure region where the resource group will be created."
