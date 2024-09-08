@@ -40,5 +40,5 @@ variable "nat_gateway_name" {
 
 variable "public_ip_address_ids" {
   type        = list(string)
-  description = "The IDs of the public IP addresses associated with the NAT gateway."
+  description = "The IDs of the public IP addresses associated with the NAT gateway"
 }

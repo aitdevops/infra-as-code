@@ -13,5 +13,5 @@ module "network" {
   private_subnet_name     = var.private_subnet_name
   private_subnet_address_prefixes = ["10.0.1.0/24"]
   nat_gateway_name        = var.nat_gateway_name 
-  public_ip_address_ids    = [azurerm_public_ip.my_public_ip.id]  # Define and create this resource in your configuration
+  public_ip_address_ids    = [azurerm_public_ip.my_public_ip.id]  # Defin and create this resource in your configuration
 }
