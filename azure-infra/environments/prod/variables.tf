@@ -34,12 +34,20 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "tags" {
+  description = "Tags to assign to the resources."
+  type        = map(string)
+}
 
 variable "private_subnet_name" {
   description = "The name of the private subnet."
   type        = string
 }
 
+variable "private_subnet_address_prefixes" {
+  description = "The address prefixes for the private subnet."
+  type        = list(string)
+}
 
 variable "nat_gateway_name" {
   description = "The name of the NAT gateway."
