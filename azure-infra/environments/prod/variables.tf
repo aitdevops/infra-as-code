@@ -27,7 +27,10 @@ variable "vnet_name" {
   description = "The name of the VNet to create."
   type        = string
 }
-
+variable "address_space" {
+  type        = list(string)
+  description = "The address space of the virtual network."
+}
 
 variable "resource_group_name" {
   description = "The name of the resource group."
