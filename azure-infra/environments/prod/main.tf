@@ -13,6 +13,5 @@ module "network" {
   private_subnet_name = "my-private-subnet"
   private_subnet_address_prefixes = ["10.0.1.0/24"]
   nat_gateway_name    = "my-nat-gateway"
-  public_ip_address_id = azurerm_public_ip.nat_gateway_ip.id
 }
 
