@@ -19,6 +19,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "${var.prefix}-aks"
 
   network_profile {
+    network_plugin     = "azure"        # or "kubenet" depending on your needs
     service_cidr       = "10.1.0.0/16"  # Ensure this does not overlap with existing subnets
     dns_service_ip     = "10.1.0.10"    # Must be within the service CIDR
     load_balancer_sku  = "Standard"
