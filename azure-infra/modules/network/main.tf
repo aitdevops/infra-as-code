@@ -20,14 +20,6 @@ resource "azurerm_nat_gateway" "nat_gateway" {
   tags                = var.tags
 }
 
-resource "azurerm_public_ip" "nat_gateway_ip" {
-  name                = "my-nat-gateway-ip"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
 resource "azurerm_nat_gateway_public_ip_association" "nat_gateway_ip_association" {
   nat_gateway_id       = azurerm_nat_gateway.nat_gateway.id
   public_ip_address_id = var.public_ip_address_id

@@ -3,6 +3,14 @@ module "resource_group" {
   rg_group_name       = var.rg_group_name
   location            = var.location
 }
+resource "azurerm_public_ip" "nat_gateway_ip" {
+  name                = "my-nat-gateway-ip"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
 module "network" {
   source                    = "../../modules/network"
   vnet_name                 = "my-vnet"
