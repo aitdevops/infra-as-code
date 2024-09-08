@@ -15,7 +15,7 @@ data "azurerm_subnet" "subnet" {
 # AKS Cluster
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = "${var.prefix}-aks"
-  location            = azurerm_resource_group.rg.location
+  location            = var.location
   resource_group_name = var.resource_group_name
   dns_prefix          = "${var.prefix}-aks"
 
