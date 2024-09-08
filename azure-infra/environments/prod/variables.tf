@@ -28,21 +28,12 @@ variable "vnet_name" {
   type        = string
 }
 
-variable "address_space" {
-  description = "The address space of the VNet."
-  type        = list(string)
-}
-
 
 variable "resource_group_name" {
   description = "The name of the resource group."
   type        = string
 }
 
-variable "tags" {
-  description = "Tags to assign to the resources."
-  type        = map(string)
-}
 
 variable "private_subnet_name" {
   description = "The name of the private subnet."
