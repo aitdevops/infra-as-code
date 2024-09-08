@@ -23,41 +23,13 @@ variable "azure_client_id" {
   description = "Azure Client ID used for Terraform"
 }
 # vnet variables
-variable "vnet_name" {
-  description = "The name of the VNet to create."
+variable "location" {
   type        = string
-}
-variable "address_space" {
-  type        = list(string)
-  description = "The address space of the virtual network."
+  description = "Azure location for the resources"
 }
 
-variable "resource_group_name" {
-  description = "The name of the resource group."
+variable "prefix" {
   type        = string
+  description = "Prefix for resource names"
 }
 
-variable "tags" {
-  description = "Tags to assign to the resources."
-  type        = map(string)
-}
-
-variable "private_subnet_name" {
-  description = "The name of the private subnet."
-  type        = string
-}
-
-variable "private_subnet_address_prefixes" {
-  description = "The address prefixes for the private subnet."
-  type        = list(string)
-}
-
-variable "nat_gateway_name" {
-  description = "The name of the NAT gateway."
-  type        = string
-}
-
-variable "public_ip_address_id" {
-  description = "The ID of the public IP address associated with the NAT gateway."
-  type        = string
-}

@@ -3,28 +3,16 @@ module "resource_group" {
   rg_group_name       = var.rg_group_name
   location            = var.location
 }
-resource "azurerm_public_ip" "nat_gateway_ip" {
-  name                = "my-nat-gateway-ip"
+module "vnet" {
+  source              = "../../modules/vnet"
+  prefix              = "prod"
   location            = var.location
-  resource_group_name = var.resource_group_name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.0.0.0/16"]
+  address_prefixes    = ["10.0.0.0/24"]
 }
 
-module "network" {
-  source                    = "../../modules/network"
-  vnet_name                 = var.vnet_name
-  address_space             = var.address_space
-  location                  = var.location
-  resource_group_name       = var.resource_group_name
-  tags                      = var.tags
-  private_subnet_name       = var.private_subnet_name 
-  private_subnet_address_prefixes = var.private_subnet_address_prefixes
-  nat_gateway_name          = var.nat_gateway_name
+resource "azurerm_resource_group" "rg" {
+  location = var.location
+  name     = "${var.prefix}-rg"
 }
-
-resource "azurerm_nat_gateway_public_ip_association" "nat_gateway_ip_association" {
-  nat_gateway_id       = module.network.nat_gateway_id
-  public_ip_address_id = module.network.public_ip_address_id
-}
-
