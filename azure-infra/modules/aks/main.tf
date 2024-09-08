@@ -14,7 +14,7 @@ data "azurerm_subnet" "subnet" {
 # AKS Cluster
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = "${var.prefix}-aks"
-  location            = "eastus2"
+  location            = var.location
   resource_group_name = "aitdevops-rg" # Use existing resource group
   dns_prefix          = "${var.prefix}-aks"
 
