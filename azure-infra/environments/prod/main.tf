@@ -14,12 +14,12 @@ resource "azurerm_public_ip" "nat_gateway_ip" {
 module "network" {
   source                    = "../../modules/network"
   vnet_name                 = var.vnet_name
-  address_space             = ["10.0.0.0/16"]
+  address_space             = var.address_space
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  tags                      = { "Environment" = "Production" }
+  tags                      = var.tags
   private_subnet_name       = var.private_subnet_name 
-  private_subnet_address_prefixes = ["10.0.1.0/24"]
+  private_subnet_address_prefixes = var.private_subnet_address_prefixes
   nat_gateway_name          = var.nat_gateway_name
   public_ip_address_id      = azurerm_public_ip.nat_gateway_ip.id
 }
