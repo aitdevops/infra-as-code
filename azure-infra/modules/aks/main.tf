@@ -1,5 +1,3 @@
-# Resource Group
-
 # Reference existing VNet and Subnet
 data "azurerm_virtual_network" "vnet" {
   name                = "aitdevops-vnet"
@@ -9,13 +7,7 @@ data "azurerm_virtual_network" "vnet" {
 data "azurerm_subnet" "subnet" {
   name                 = "aitdevops-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  resource_group_name = "${var.prefix}-rg"
-}
-
-data "azurerm_" "subnet" {
-  name                 = "aitdevops-subnet"
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
-  resource_group_name = "${var.prefix}-rg"
+  resource_group_name  = "${var.prefix}-rg"
 }
 
 # AKS Cluster
@@ -41,4 +33,3 @@ resource "azurerm_kubernetes_cluster" "aks" {
     environment = "production"
   }
 }
-
