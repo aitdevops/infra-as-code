@@ -40,10 +40,6 @@ variable "private_subnet_name" {
   type        = string
 }
 
-variable "private_subnet_address_prefixes" {
-  description = "The address prefixes for the private subnet."
-  type        = list(string)
-}
 
 variable "nat_gateway_name" {
   description = "The name of the NAT gateway."
