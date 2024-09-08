@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'azure-infra/environments/prod/**'
+      - 'azure-infra/modules/**'
       - '.github/workflows/azure_apply.yaml'
   workflow_dispatch:
 
